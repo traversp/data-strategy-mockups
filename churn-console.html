@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retention · Churn Intervention Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0B0A08;
+    --bg-1: #131210;
+    --bg-2: #1A1816;
+    --bg-3: #221F1B;
+    --bg-hover: #2A2622;
+    --bg-selected: #2A2517;
+    --line: #2A2723;
+    --line-2: #3A352E;
+    --line-bright: #4A443B;
+    
+    --ink-1: #F4EFE3;
+    --ink-2: #C0B9A8;
+    --ink-3: #8A8576;
+    --ink-4: #5C574E;
+    --ink-5: #3D3933;
+    
+    --bronze: #D4B274;
+    --bronze-2: #B89559;
+    --bronze-dim: #8E7B5C;
+    --bronze-faded: rgba(212, 178, 116, 0.08);
+    
+    --good: #7BC495;
+    --good-bg: rgba(123, 196, 149, 0.08);
+    --warn: #E0B26B;
+    --warn-bg: rgba(224, 178, 107, 0.08);
+    --alert: #E08585;
+    --alert-bg: rgba(224, 133, 133, 0.08);
+    
+    --shadow-1: 0 1px 0 rgba(255,255,255,0.04) inset;
+    --shadow-card: 
+      0 1px 0 rgba(255, 240, 220, 0.04) inset,
+      0 0 0 1px rgba(255, 240, 220, 0.02),
+      0 12px 24px rgba(0,0,0,0.18);
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg-deep); }
+  
+  body {
+    background: var(--bg-deep);
+    color: var(--ink-1);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    font-feature-settings: 'ss01' on, 'cv11' on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    
+    background-image:
+      radial-gradient(ellipse 1200px 600px at 50% -200px, rgba(212, 178, 116, 0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 800px 800px at 100% 100%, rgba(212, 178, 116, 0.02) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(244, 239, 227, 0.018) 1px, transparent 0);
+    background-size: 24px 24px;
+    z-index: 0;
+  }
+  
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 24px 32px 40px;
+  }
+  
+  .num, [data-num] {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+  }
+  
+  /* ============================================================
+     TOP BAR
+     ============================================================ */
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 6px 0 22px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+  
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px 7px 10px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--ink-2);
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    box-shadow: var(--shadow-1);
+  }
+  
+  .back-link:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+    color: var(--ink-1);
+  }
+  
+  .back-link .arrow {
+    font-family: 'Geist Mono', monospace;
+    color: var(--bronze);
+    transition: transform 0.15s;
+  }
+  
+  .back-link:hover .arrow { transform: translateX(-2px); }
+  
+  .wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.32em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+  }
+  
+  .brand-sep {
+    width: 1px;
+    height: 14px;
+    background: var(--line-2);
+  }
+  
+  .product-name {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  .center-title {
+    text-align: center;
+  }
+  
+  .center-title-name {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-style: italic;
+    color: var(--ink-1);
+    letter-spacing: -0.005em;
+  }
+  
+  .center-title-meta {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-top: 3px;
+    font-weight: 600;
+  }
+  
+  .topbar-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 10px;
+    background: var(--good-bg);
+    border: 1px solid rgba(123, 196, 149, 0.2);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--good);
+  }
+  
+  .pulse-dot {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 6px rgba(123, 196, 149, 0.6);
+  }
+  
+  .pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: var(--good);
+    opacity: 0.4;
+    animation: ringPulse 2s ease-out infinite;
+  }
+  
+  @keyframes ringPulse {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    100% { transform: scale(3.5); opacity: 0; }
+  }
+  
+  .time-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.1;
+  }
+  
+  .time-display .clock {
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-1);
+  }
+  
+  .time-display .date {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+  
+  .gm-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px 5px 5px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    transition: all 0.15s ease;
+  }
+  
+  .gm-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bronze) 0%, var(--bronze-2) 100%);
+    color: #1A1816;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  
+  .gm-info { line-height: 1.15; }
+  .gm-name { font-size: 12px; font-weight: 500; color: var(--ink-1); }
+  .gm-role {
+    font-size: 9.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  
+  /* ============================================================
+     KPI STRIP
+     ============================================================ */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .kpi-cell {
+    background: var(--bg-1);
+    padding: 18px 22px;
+    transition: background 0.2s;
+  }
+  
+  .kpi-cell:hover { background: var(--bg-2); }
+  
+  .kpi-cell.featured {
+    background: linear-gradient(180deg, #1F1B14 0%, #16130E 100%);
+    position: relative;
+  }
+  
+  .kpi-cell.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze) 40%, var(--bronze) 60%, transparent 100%);
+    opacity: 0.5;
+  }
+  
+  .kpi-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  
+  .kpi-cell.featured .kpi-label { color: var(--bronze); }
+  
+  .kpi-number {
+    font-family: 'Geist', sans-serif;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink-1);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+  }
+  
+  .kpi-number .currency { font-size: 22px; color: var(--ink-2); }
+  .kpi-number .unit { font-size: 18px; color: var(--ink-3); margin-left: 4px; }
+  
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  
+  .kpi-sub b { color: var(--ink-1); font-weight: 500; }
+  
+  /* ============================================================
+     MAIN — list + detail
+     ============================================================ */
+  .console {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  
+  /* QUEUE PANEL */
+  .queue {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 280px);
+  }
+  
+  .queue-head {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .queue-title {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  
+  .queue-name {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--ink-1);
+    font-style: italic;
+    letter-spacing: -0.005em;
+  }
+  
+  .queue-count {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--bronze);
+    font-weight: 500;
+  }
+  
+  .queue-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 3px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  
+  .queue-tab {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  
+  .queue-tab:hover { color: var(--ink-2); }
+  
+  .queue-tab.active {
+    background: var(--bg-2);
+    color: var(--ink-1);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;
+  }
+  
+  .queue-list {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-bright) transparent;
+  }
+  
+  .queue-list::-webkit-scrollbar { width: 6px; }
+  .queue-list::-webkit-scrollbar-thumb { background: var(--line-bright); border-radius: 3px; }
+  
+  .queue-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  
+  .queue-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 2px;
+    background: var(--ink-5);
+  }
+  
+  .queue-row.severity-high::before { background: var(--alert); }
+  .queue-row.severity-med::before { background: var(--warn); }
+  .queue-row.severity-low::before { background: var(--ink-4); }
+  
+  .queue-row:hover { background: var(--bg-2); }
+  
+  .queue-row.selected {
+    background: var(--bg-selected);
+  }
+  
+  .queue-row.selected::before {
+    background: var(--bronze);
+    width: 3px;
+  }
+  
+  .queue-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  
+  .queue-row.selected .queue-avatar {
+    background: var(--bronze-faded);
+    border-color: var(--bronze-dim);
+    color: var(--bronze);
+  }
+  
+  .queue-info {
+    min-width: 0;
+  }
+  
+  .queue-row-name {
+    font-size: 13px;
+    color: var(--ink-1);
+    font-weight: 500;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .queue-row-name .tier-tag {
+    font-size: 9.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  .queue-signal {
+    font-size: 11px;
+    color: var(--ink-3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .queue-score {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  
+  .queue-score-val {
+    font-family: 'Geist', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--alert);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  
+  .queue-score-val.med { color: var(--warn); }
+  .queue-score-val.low { color: var(--ink-3); }
+  
+  .queue-score-val .percent { font-size: 10px; color: var(--ink-4); font-weight: 400; }
+  
+  .queue-score-tag {
+    font-size: 9px;
+    color: var(--ink-4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  /* ============================================================
+     DETAIL PANEL
+     ============================================================ */
+  .detail {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Detail header */
+  .detail-head {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(212, 178, 116, 0.03) 0%, transparent 100%);
+    position: relative;
+  }
+  
+  .detail-head::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze) 30%, var(--bronze) 70%, transparent 100%);
+    opacity: 0.4;
+  }
+  
+  .detail-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bronze-dim) 0%, var(--bg-3) 100%);
+    border: 1px solid var(--line-bright);
+    color: var(--ink-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+  
+  .detail-identity .name {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ink-1);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  
+  .detail-identity .meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 11.5px;
+    color: var(--ink-3);
+  }
+  
+  .detail-identity .meta .tier {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+    color: var(--bronze);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  
+  .detail-identity .meta .sep {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--ink-4);
+  }
+  
+  .detail-risk {
+    text-align: right;
+    padding-left: 24px;
+    border-left: 1px solid var(--line);
+  }
+  
+  .detail-risk-num {
+    font-family: 'Geist', sans-serif;
+    font-size: 48px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--alert);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    display: inline-flex;
+    align-items: baseline;
+  }
+  
+  .detail-risk-num .percent { font-size: 22px; color: var(--alert); opacity: 0.6; }
+  
+  .detail-risk-label {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  
+  .detail-risk-trend {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--alert);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* Stats grid */
+  .detail-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-deep);
+  }
+  
+  .stat-cell {
+    padding: 16px 22px;
+    border-right: 1px solid var(--line);
+  }
+  
+  .stat-cell:last-child { border-right: none; }
+  
+  .stat-cell-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+  }
+  
+  .stat-cell-value {
+    font-family: 'Geist', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink-1);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  
+  .stat-cell-value .unit, .stat-cell-value .currency {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+  
+  .stat-cell-meta {
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  
+  .stat-cell-meta.down { color: var(--alert); }
+  .stat-cell-meta.up { color: var(--good); }
+  
+  /* Detail body — sections */
+  .detail-body {
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  
+  .detail-section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink-1);
+    margin-bottom: 14px;
+    letter-spacing: -0.005em;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  
+  .section-title-meta {
+    font-size: 10px;
+    color: var(--ink-3);
+    font-style: normal;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  /* Behaviour timeline chart */
+  .behaviour-chart {
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 20px 14px;
+  }
+  
+  .chart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  
+  .chart-y-label {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 10px;
+  }
+  
+  .legend-pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-3);
+  }
+  
+  .legend-mark {
+    width: 12px;
+    height: 2px;
+    border-radius: 1px;
+  }
+  
+  .behaviour-svg {
+    width: 100%;
+    height: 130px;
+    display: block;
+  }
+  
+  .chart-x-labels {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    margin-top: 6px;
+    font-size: 9.5px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  
+  .chart-x-labels .now { color: var(--bronze); font-weight: 600; }
+  
+  /* Risk signals */
+  .signals {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .signal {
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+    transition: all 0.15s;
+  }
+  
+  .signal:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+  }
+  
+  .signal-impact {
+    width: 4px;
+    height: 28px;
+    border-radius: 2px;
+    background: var(--ink-5);
+  }
+  
+  .signal-impact.high { background: var(--alert); }
+  .signal-impact.med { background: var(--warn); }
+  .signal-impact.low { background: var(--ink-4); }
+  
+  .signal-body .signal-name {
+    font-size: 12.5px;
+    color: var(--ink-1);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  
+  .signal-body .signal-detail {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .signal-weight {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-3);
+    text-align: right;
+  }
+  
+  .signal-weight b {
+    color: var(--ink-1);
+    font-weight: 600;
+  }
+  
+  /* Interventions */
+  .interventions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .intervention {
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    transition: all 0.15s;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .intervention:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+  }
+  
+  .intervention.primary {
+    background: linear-gradient(135deg, rgba(212, 178, 116, 0.06) 0%, var(--bg-deep) 100%);
+    border-color: rgba(212, 178, 116, 0.2);
+  }
+  
+  .intervention.primary::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: -7px;
+    left: 14px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--bronze);
+    background: var(--bg-1);
+    padding: 0 8px;
+    line-height: 14px;
+  }
+  
+  .intervention-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  
+  .intervention-name {
+    font-size: 13px;
+    color: var(--ink-1);
+    font-weight: 500;
+  }
+  
+  .intervention-recovery {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--bronze);
+    font-weight: 500;
+  }
+  
+  .intervention.primary .intervention-recovery {
+    color: var(--bronze);
+    font-weight: 600;
+  }
+  
+  .intervention-desc {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  
+  .intervention-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--line-bright);
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-1);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  
+  .btn:hover {
+    background: var(--bg-3);
+    border-color: var(--ink-4);
+  }
+  
+  .btn.primary {
+    background: var(--bronze);
+    color: #1A1612;
+    border-color: var(--bronze);
+    font-weight: 600;
+  }
+  
+  .btn.primary:hover {
+    background: var(--bronze-2);
+    border-color: var(--bronze-2);
+  }
+  
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-3);
+    border-color: transparent;
+    padding: 6px 8px;
+  }
+  
+  .btn-ghost:hover {
+    color: var(--ink-1);
+    background: var(--bg-2);
+  }
+  
+  /* Interaction history */
+  .history {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .history-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  
+  .history-item:last-child { border-bottom: none; }
+  
+  .history-date {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+  }
+  
+  .history-body .history-action {
+    font-size: 12.5px;
+    color: var(--ink-1);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  
+  .history-body .history-note {
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  
+  .history-body .history-actor {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10.5px;
+    color: var(--ink-4);
+    margin-top: 4px;
+  }
+  
+  /* Action bar at bottom of detail */
+  .detail-actions {
+    padding: 20px 28px;
+    border-top: 1px solid var(--line);
+    background: var(--bg-deep);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .actions-left, .actions-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .footer {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  
+  .sources {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+  }
+  
+  .source {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10.5px;
+  }
+  
+  .source-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 4px rgba(123, 196, 149, 0.5);
+  }
+  
+  .source-name { color: var(--ink-2); }
+  
+  .source-meta {
+    color: var(--ink-4);
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+  }
+  
+  .model-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  
+  .model-info b {
+    color: var(--ink-1);
+    font-weight: 500;
+  }
+  
+  /* Entrance */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .topbar, .kpi-strip, .console, .footer {
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .kpi-strip { animation-delay: 0.05s; }
+  .console { animation-delay: 0.1s; }
+  .footer { animation-delay: 0.2s; }
+  
+  /* ============================================================
+     TOUR INDICATORS — pulse markers on clickable demo elements
+     ============================================================ */
+  .tour-pulse {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 0 2px rgba(11, 10, 8, 0.85), 0 0 12px var(--bronze);
+    z-index: 100;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tour-pulse::before, .tour-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+  }
+  .tour-pulse::before { animation: tourRing 2.4s ease-out infinite; }
+  .tour-pulse::after { animation: tourRing 2.4s ease-out infinite 1.2s; }
+  @keyframes tourRing {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(3.4); opacity: 0; }
+  }
+  .tour-pulse:hover { transform: scale(1.3); }
+  .tour-pulse-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1A1816;
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    color: var(--ink-1);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Geist', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    letter-spacing: 0.01em;
+  }
+  .tour-pulse-label .arrow {
+    color: var(--bronze);
+    font-family: 'Geist Mono', monospace;
+    margin: 0 4px 0 2px;
+  }
+  .tour-pulse:hover .tour-pulse-label { opacity: 1; }
+  .tour-pulse.tl { top: -6px; left: -6px; }
+  .tour-pulse.tl .tour-pulse-label { left: calc(100% + 12px); }
+  .tour-pulse.tl .tour-pulse-label::before { content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-right-color: #1A1816; }
+  .tour-pulse.tr { top: -6px; right: -6px; }
+  .tour-pulse.tr .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.tr .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  .tour-pulse.center-r { top: 50%; right: -6px; transform: translateY(-50%); }
+  .tour-pulse.center-r:hover { transform: translateY(-50%) scale(1.3); }
+  .tour-pulse.center-r .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.center-r .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  body.tour-off .tour-pulse { display: none; }
+  
+  .tour-toggle {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px 9px 11px;
+    background: rgba(26, 24, 22, 0.95);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--ink-1);
+    font-family: 'Geist', sans-serif;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    user-select: none;
+  }
+  .tour-toggle:hover { border-color: var(--bronze); transform: translateY(-1px); }
+  .tour-toggle-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  .tour-toggle-dot::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+    animation: tourRing 2.4s ease-out infinite;
+  }
+  body.tour-off .tour-toggle-dot { background: var(--ink-4); box-shadow: none; }
+  body.tour-off .tour-toggle-dot::after { display: none; }
+  body.tour-off .tour-toggle { color: var(--ink-3); border-color: rgba(255,255,255,0.08); }
+  .tour-toggle-key {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    padding: 1px 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 3px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+  
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand-row">
+      <a href="gm-dashboard.html" class="back-link">
+        <span class="arrow">←</span>
+        Dashboard
+      </a>
+      <div class="brand-sep"></div>
+      <div class="wordmark">Third&nbsp;Space</div>
+      <div class="brand-sep"></div>
+      <div class="product-name">Retention</div>
+    </div>
+    
+    <div class="center-title">
+      <div class="center-title-name">Churn Intervention Console</div>
+      <div class="center-title-meta">Canary Wharf &nbsp;·&nbsp; This Week</div>
+    </div>
+    
+    <div class="topbar-right">
+      <div class="live-pill">
+        <div class="pulse-dot"></div>
+        <span>Live</span>
+      </div>
+      <div class="time-display">
+        <div class="clock" id="clock">09:14:32</div>
+        <div class="date" id="datestr">Tue · 26 Nov</div>
+      </div>
+      <div class="gm-chip">
+        <div class="gm-avatar">JP</div>
+        <div class="gm-info">
+          <div class="gm-name">JP Singh</div>
+          <div class="gm-role">General Manager</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- KPI STRIP -->
+  <section class="kpi-strip">
+    <div class="kpi-cell featured">
+      <div class="kpi-label">At Risk · 30d</div>
+      <div class="kpi-number num">23</div>
+      <div class="kpi-sub"><b>7</b> Founder · <b>10</b> Premium · <b>6</b> Core</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">LTV at Risk</div>
+      <div class="kpi-number num"><span class="currency">£</span>128k</div>
+      <div class="kpi-sub">Annualised · weighted by churn probability</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">Model Recovery Rate</div>
+      <div class="kpi-number num">41<span class="unit">%</span></div>
+      <div class="kpi-sub">When intervened &lt;7 days · 6-month avg</div>
+    </div>
+    <div class="kpi-cell">
+      <div class="kpi-label">Actions This Week</div>
+      <div class="kpi-number num">11</div>
+      <div class="kpi-sub"><b>6</b> in flight · <b>3</b> recovered · <b>2</b> lost</div>
+    </div>
+  </section>
+  
+  <!-- CONSOLE: QUEUE + DETAIL -->
+  <section class="console">
+    
+    <!-- QUEUE -->
+    <div class="queue">
+      <div class="queue-head">
+        <div class="queue-title">
+          <div class="queue-name">Queue.</div>
+          <div class="queue-count">23 · sorted by risk</div>
+        </div>
+        <div class="queue-tabs">
+          <button class="queue-tab active">All</button>
+          <button class="queue-tab">Founder</button>
+          <button class="queue-tab">Untouched</button>
+          <button class="queue-tab">In Flight</button>
+        </div>
+      </div>
+      
+      <div class="queue-list">
+        <div class="queue-row selected severity-high" data-member="sarah-jones">
+          <div class="queue-avatar">SJ</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Sarah Jones <span class="tier-tag">FOUNDER</span></div>
+            <div class="queue-signal">Last visit 9d &nbsp;·&nbsp; visits ↓ 67% MoM</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val">73<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-high" data-member="james-mitchell">
+          <div class="queue-avatar">JM</div>
+          <div class="queue-info">
+            <div class="queue-row-name">James Mitchell <span class="tier-tag">PREMIUM</span></div>
+            <div class="queue-signal">PT lapsed &nbsp;·&nbsp; 3 of typical 12 visits</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val">68<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-high" data-member="aisha-patel">
+          <div class="queue-avatar">AP</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Aisha Patel <span class="tier-tag">FOUNDER</span></div>
+            <div class="queue-signal">14d absent &nbsp;·&nbsp; Detractor NPS</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val">64<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-med" data-member="tom-williamson">
+          <div class="queue-avatar">TW</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Tom Williamson <span class="tier-tag">CORE</span></div>
+            <div class="queue-signal">DD failed twice &nbsp;·&nbsp; 11d no contact</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val med">58<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-med" data-member="lina-bauer">
+          <div class="queue-avatar">LB</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Lina Bauer <span class="tier-tag">PREMIUM</span></div>
+            <div class="queue-signal">Cancellations ↑ &nbsp;·&nbsp; classes ↓ 50%</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val med">54<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-med" data-member="ravi-mehta">
+          <div class="queue-avatar">RM</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Ravi Mehta <span class="tier-tag">FOUNDER</span></div>
+            <div class="queue-signal">App opens ↓ 80% &nbsp;·&nbsp; spa stopped</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val med">52<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-med" data-member="sophie-chen">
+          <div class="queue-avatar">SC</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Sophie Chen <span class="tier-tag">PREMIUM</span></div>
+            <div class="queue-signal">Visits irregular &nbsp;·&nbsp; PT bookings ↓</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val med">49<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-low" data-member="marcus-tan">
+          <div class="queue-avatar">MT</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Marcus Tan <span class="tier-tag">CORE</span></div>
+            <div class="queue-signal">8 visits this month vs 14 typical</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val low">44<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-low" data-member="priya-iyengar">
+          <div class="queue-avatar">PI</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Priya Iyengar <span class="tier-tag">FOUNDER</span></div>
+            <div class="queue-signal">PT discontinued &nbsp;·&nbsp; weekday ↓</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val low">41<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-low" data-member="elliot-james">
+          <div class="queue-avatar">EJ</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Elliot James <span class="tier-tag">PREMIUM</span></div>
+            <div class="queue-signal">Class bookings cancelled 4x</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val low">39<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-low" data-member="harriet-okonkwo">
+          <div class="queue-avatar">HO</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Harriet Okonkwo <span class="tier-tag">CORE</span></div>
+            <div class="queue-signal">Weekend-only pattern broken</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val low">36<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+        
+        <div class="queue-row severity-low" data-member="daniel-shore">
+          <div class="queue-avatar">DS</div>
+          <div class="queue-info">
+            <div class="queue-row-name">Daniel Shore <span class="tier-tag">PREMIUM</span></div>
+            <div class="queue-signal">Engagement score down 30%</div>
+          </div>
+          <div class="queue-score">
+            <div class="queue-score-val low">34<span class="percent">%</span></div>
+            <div class="queue-score-tag">30d</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- DETAIL -->
+    <div class="detail">
+      
+      <!-- Detail header -->
+      <div class="detail-head">
+        <div class="detail-avatar">SJ</div>
+        <div class="detail-identity">
+          <div class="name">Sarah Jones</div>
+          <div class="meta">
+            <span class="tier">●  Founder Member</span>
+            <span class="sep"></span>
+            <span>Member 4y 2m</span>
+            <span class="sep"></span>
+            <span>Canary Wharf · home club</span>
+            <span class="sep"></span>
+            <span>ID 0421</span>
+          </div>
+        </div>
+        <div class="detail-risk">
+          <div class="detail-risk-num num">73<span class="percent">%</span></div>
+          <div class="detail-risk-label">30d Churn Risk</div>
+          <div class="detail-risk-trend">↑ 22pp in last 14 days</div>
+        </div>
+      </div>
+      
+      <!-- Stats grid -->
+      <div class="detail-stats">
+        <div class="stat-cell">
+          <div class="stat-cell-label">Lifetime Value</div>
+          <div class="stat-cell-value num"><span class="currency">£</span>14,820</div>
+          <div class="stat-cell-meta">Top 8% of cohort</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Last Visit</div>
+          <div class="stat-cell-value num">9<span class="unit"> days</span></div>
+          <div class="stat-cell-meta down">↑ from 2.4 day avg</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">Visits · 30d</div>
+          <div class="stat-cell-value num">4</div>
+          <div class="stat-cell-meta down">↓ 67% vs 12 typical</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell-label">NPS Score</div>
+          <div class="stat-cell-value num">+8</div>
+          <div class="stat-cell-meta">Passive · Aug 2024</div>
+        </div>
+      </div>
+      
+      <!-- Body: two columns -->
+      <div class="detail-body">
+        
+        <!-- LEFT: Behaviour + Signals -->
+        <div class="detail-section">
+          <div class="section-title">
+            Behaviour Trajectory.
+            <span class="section-title-meta">6 months</span>
+          </div>
+          
+          <div class="behaviour-chart">
+            <div class="chart-row">
+              <div class="chart-y-label">Visits per week</div>
+              <div class="chart-legend">
+                <div class="legend-pair"><div class="legend-mark" style="background:#7BC495"></div>Sarah</div>
+                <div class="legend-pair"><div class="legend-mark" style="background:#5C574E"></div>Founder cohort avg</div>
+              </div>
+            </div>
+            
+            <svg class="behaviour-svg" viewBox="0 0 600 130" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="sarahGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#7BC495" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="#7BC495" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              
+              <!-- Grid -->
+              <line x1="0" y1="32" x2="600" y2="32" stroke="#2A2723" stroke-width="0.5" stroke-dasharray="2 4"/>
+              <line x1="0" y1="65" x2="600" y2="65" stroke="#2A2723" stroke-width="0.5" stroke-dasharray="2 4"/>
+              <line x1="0" y1="98" x2="600" y2="98" stroke="#2A2723" stroke-width="0.5" stroke-dasharray="2 4"/>
+              
+              <!-- Cohort baseline (greyer) -->
+              <polyline points="0,52 100,48 200,50 300,52 400,50 500,48 600,52" 
+                        stroke="#5C574E" stroke-width="1.2" fill="none" stroke-linejoin="round" stroke-dasharray="3 3"/>
+              
+              <!-- Sarah's actual visits — strong then declining -->
+              <path d="M 0,35 L 100,28 L 200,32 L 300,40 L 400,68 L 500,88 L 600,102 L 600,130 L 0,130 Z" fill="url(#sarahGrad)"/>
+              <polyline points="0,35 100,28 200,32 300,40 400,68 500,88 600,102" 
+                        stroke="#7BC495" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              
+              <!-- Drop-off shaded region -->
+              <rect x="380" y="0" width="220" height="130" fill="rgba(224, 133, 133, 0.06)"/>
+              <text x="490" y="18" text-anchor="middle" fill="#E08585" font-family="Geist Mono" font-size="9" font-weight="600" letter-spacing="1.5">DROP-OFF</text>
+              
+              <!-- Data points -->
+              <circle cx="0" cy="35" r="2.5" fill="#7BC495"/>
+              <circle cx="100" cy="28" r="2.5" fill="#7BC495"/>
+              <circle cx="200" cy="32" r="2.5" fill="#7BC495"/>
+              <circle cx="300" cy="40" r="2.5" fill="#7BC495"/>
+              <circle cx="400" cy="68" r="3" fill="#E0B26B"/>
+              <circle cx="500" cy="88" r="3" fill="#E0B26B"/>
+              <circle cx="600" cy="102" r="4" fill="#E08585"/>
+            </svg>
+            
+            <div class="chart-x-labels">
+              <span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span class="now">Now</span>
+            </div>
+          </div>
+          
+          <div class="section-title" style="margin-top: 24px;">
+            Risk Signals.
+            <span class="section-title-meta">Top 4 of 9</span>
+          </div>
+          
+          <div class="signals">
+            <div class="signal">
+              <div class="signal-impact high"></div>
+              <div class="signal-body">
+                <div class="signal-name">Visit frequency collapse</div>
+                <div class="signal-detail">4 visits / 30d &nbsp;·&nbsp; usual 12 &nbsp;·&nbsp; began 6 weeks ago</div>
+              </div>
+              <div class="signal-weight">impact<br><b>0.34</b></div>
+            </div>
+            <div class="signal">
+              <div class="signal-impact high"></div>
+              <div class="signal-body">
+                <div class="signal-name">Strength training stopped</div>
+                <div class="signal-detail">Last lift session 42d &nbsp;·&nbsp; was 3×/week</div>
+              </div>
+              <div class="signal-weight">impact<br><b>0.21</b></div>
+            </div>
+            <div class="signal">
+              <div class="signal-impact med"></div>
+              <div class="signal-body">
+                <div class="signal-name">App engagement down</div>
+                <div class="signal-detail">App opens 2/wk &nbsp;·&nbsp; was 11/wk</div>
+              </div>
+              <div class="signal-weight">impact<br><b>0.14</b></div>
+            </div>
+            <div class="signal">
+              <div class="signal-impact med"></div>
+              <div class="signal-body">
+                <div class="signal-name">Class bookings declined</div>
+                <div class="signal-detail">2 cancellations in last 14d &nbsp;·&nbsp; pattern broken</div>
+              </div>
+              <div class="signal-weight">impact<br><b>0.09</b></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- RIGHT: Interventions + History -->
+        <div class="detail-section">
+          <div class="section-title">
+            Suggested Interventions.
+            <span class="section-title-meta">Ranked by predicted recovery</span>
+          </div>
+          
+          <div class="interventions">
+            <div class="intervention primary">
+              <div class="intervention-head">
+                <div class="intervention-name">Personalised PT outreach</div>
+                <div class="intervention-recovery">41% recovery</div>
+              </div>
+              <div class="intervention-desc">
+                Offer 2 complimentary sessions with Priya Iyer (Sarah's previous PT). 11 of 23 at-risk Founder members fit this cohort — 41% recovery rate historically.
+              </div>
+              <div class="intervention-actions">
+                <button class="btn primary">Schedule outreach</button>
+                <button class="btn-ghost btn">View cohort</button>
+              </div>
+            </div>
+            
+            <div class="intervention">
+              <div class="intervention-head">
+                <div class="intervention-name">GM personal call</div>
+                <div class="intervention-recovery">28% recovery</div>
+              </div>
+              <div class="intervention-desc">
+                Direct outreach from JP. Best for Founder tier with high LTV. Cohort recovery rate 28% when call placed within 7 days of risk flag.
+              </div>
+              <div class="intervention-actions">
+                <button class="btn">Add to call list</button>
+              </div>
+            </div>
+            
+            <div class="intervention">
+              <div class="intervention-head">
+                <div class="intervention-name">Membership review &amp; refresh</div>
+                <div class="intervention-recovery">19% recovery</div>
+              </div>
+              <div class="intervention-desc">
+                Offer a personalised programme review with the Wellness team. Good fit when activity pattern has structurally changed.
+              </div>
+              <div class="intervention-actions">
+                <button class="btn">Send invitation</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="section-title" style="margin-top: 24px;">
+            Interaction History.
+            <span class="section-title-meta">Last 6 months</span>
+          </div>
+          
+          <div class="history">
+            <div class="history-item">
+              <div class="history-date">12d ago</div>
+              <div class="history-body">
+                <div class="history-action">NPS survey response</div>
+                <div class="history-note">"Love the studio but classes I want are always booked"</div>
+                <div class="history-actor">Automated · scored Passive (+8)</div>
+              </div>
+            </div>
+            <div class="history-item">
+              <div class="history-date">6w ago</div>
+              <div class="history-body">
+                <div class="history-action">Annual membership renewed</div>
+                <div class="history-note">£3,420 · Founder tier · paid in full</div>
+                <div class="history-actor">Self-service via app</div>
+              </div>
+            </div>
+            <div class="history-item">
+              <div class="history-date">4m ago</div>
+              <div class="history-body">
+                <div class="history-action">PT consultation</div>
+                <div class="history-note">Discussed marathon training plan with Priya I.</div>
+                <div class="history-actor">Priya Iyer · PT II</div>
+              </div>
+            </div>
+            <div class="history-item">
+              <div class="history-date">1y ago</div>
+              <div class="history-body">
+                <div class="history-action">Spa membership added</div>
+                <div class="history-note">Wellness package upgrade · cancelled 3m ago</div>
+                <div class="history-actor">Membership team</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Action bar -->
+      <div class="detail-actions">
+        <div class="actions-left">
+          <button class="btn primary">Take recommended action</button>
+          <button class="btn">Log interaction</button>
+        </div>
+        <div class="actions-right">
+          <button class="btn-ghost btn">Mark not at risk</button>
+          <button class="btn-ghost btn">Snooze 7 days</button>
+          <a href="member-app.html" class="btn" style="text-decoration:none;" data-tour="<span class='arrow'>→</span>Member app" data-tour-pos="tr">Member app →</a>
+          <a href="member-360.html" class="btn" style="text-decoration:none;" data-tour="<span class='arrow'>→</span>Member 360" data-tour-pos="tr">Full profile →</a>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+  
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="sources">
+      <div class="source">
+        <div class="source-dot"></div>
+        <span class="source-name">Churn model</span>
+        <span class="source-meta">v2.4 · live</span>
+      </div>
+      <div class="source">
+        <div class="source-dot"></div>
+        <span class="source-name">Member 360</span>
+        <span class="source-meta">12 sources</span>
+      </div>
+      <div class="source">
+        <div class="source-dot"></div>
+        <span class="source-name">Interventions</span>
+        <span class="source-meta">142 logged · 6m</span>
+      </div>
+    </div>
+    <div class="model-info">
+      <span>Model · Gradient Boosted · 47 features</span>
+      <span>·</span>
+      <span>AUC <b>0.84</b></span>
+      <span>·</span>
+      <span>Refreshed <b>6 min ago</b></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function updateClock() {
+    const now = new Date();
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('clock').textContent = 
+      `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    document.getElementById('datestr').textContent = 
+      `${days[now.getDay()]} · ${now.getDate()} ${months[now.getMonth()]}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+  
+  // Member data
+  const members = {
+    'sarah-jones': {
+      initials: 'SJ', name: 'Sarah Jones', tier: 'Founder Member', tenure: 'Member 4y 2m',
+      risk: 73, riskTrend: '↑ 22pp in last 14 days',
+      ltv: '14,820', ltvCohort: 'Top 8% of cohort',
+      lastVisit: '9', visitTrend: '↑ from 2.4 day avg',
+      visits30d: '4', visitsDelta: '↓ 67% vs 12 typical',
+      nps: '+8', npsLabel: 'Passive · Aug 2024',
+      id: '0421'
+    },
+    'james-mitchell': {
+      initials: 'JM', name: 'James Mitchell', tier: 'Premium Member', tenure: 'Member 2y 8m',
+      risk: 68, riskTrend: '↑ 14pp in last 21 days',
+      ltv: '9,240', ltvCohort: 'Top 22% of cohort',
+      lastVisit: '4', visitTrend: 'Normal at 3-4 days',
+      visits30d: '3', visitsDelta: '↓ 75% vs 12 typical',
+      nps: '+4', npsLabel: 'Passive · Jul 2024',
+      id: '0782'
+    },
+    'aisha-patel': {
+      initials: 'AP', name: 'Aisha Patel', tier: 'Founder Member', tenure: 'Member 3y 6m',
+      risk: 64, riskTrend: '↑ 18pp in last 10 days',
+      ltv: '12,150', ltvCohort: 'Top 12% of cohort',
+      lastVisit: '14', visitTrend: '↑ from 3.1 day avg',
+      visits30d: '2', visitsDelta: '↓ 82% vs 11 typical',
+      nps: '−4', npsLabel: 'Detractor · Sep 2024',
+      id: '0298'
+    },
+    'tom-williamson': {
+      initials: 'TW', name: 'Tom Williamson', tier: 'Core Member', tenure: 'Member 1y 4m',
+      risk: 58, riskTrend: '↑ 9pp in last 7 days',
+      ltv: '3,840', ltvCohort: 'Top 38% of cohort',
+      lastVisit: '11', visitTrend: 'Normal at 6-8 days',
+      visits30d: '5', visitsDelta: '↓ 40% vs 8 typical',
+      nps: '–', npsLabel: 'No survey',
+      id: '1234'
+    },
+    'lina-bauer': {
+      initials: 'LB', name: 'Lina Bauer', tier: 'Premium Member', tenure: 'Member 2y 1m',
+      risk: 54, riskTrend: '↑ 11pp in last 14 days',
+      ltv: '7,920', ltvCohort: 'Top 28% of cohort',
+      lastVisit: '6', visitTrend: 'Normal',
+      visits30d: '6', visitsDelta: '↓ 50% vs 12 typical',
+      nps: '+6', npsLabel: 'Passive · Aug 2024',
+      id: '1567'
+    }
+  };
+  
+  // Pre-select member from URL parameter
+  const params = new URLSearchParams(window.location.search);
+  const targetMember = params.get('member');
+  if (targetMember && members[targetMember]) {
+    document.querySelectorAll('.queue-row').forEach(r => r.classList.remove('selected'));
+    const targetRow = document.querySelector(`.queue-row[data-member="${targetMember}"]`);
+    if (targetRow) {
+      targetRow.classList.add('selected');
+      targetRow.scrollIntoView({ block: 'nearest' });
+      applyMember(members[targetMember]);
+    }
+  }
+  
+  function applyMember(m) {
+    // Avatar
+    document.querySelector('.detail-avatar').textContent = m.initials;
+    // Header
+    document.querySelector('.detail-identity .name').textContent = m.name;
+    const metaSpans = document.querySelectorAll('.detail-identity .meta span:not(.sep)');
+    metaSpans[0].innerHTML = `●  ${m.tier}`;
+    metaSpans[1].textContent = m.tenure;
+    metaSpans[3].textContent = `ID ${m.id}`;
+    // Risk
+    document.querySelector('.detail-risk-num').innerHTML = `${m.risk}<span class="percent">%</span>`;
+    document.querySelector('.detail-risk-trend').textContent = m.riskTrend;
+    // Stats
+    const stats = document.querySelectorAll('.stat-cell-value');
+    stats[0].innerHTML = `<span class="currency">£</span>${m.ltv}`;
+    document.querySelectorAll('.stat-cell-meta')[0].textContent = m.ltvCohort;
+    stats[1].innerHTML = `${m.lastVisit}<span class="unit"> days</span>`;
+    document.querySelectorAll('.stat-cell-meta')[1].textContent = m.visitTrend;
+    stats[2].textContent = m.visits30d;
+    document.querySelectorAll('.stat-cell-meta')[2].textContent = m.visitsDelta;
+    stats[3].textContent = m.nps;
+    document.querySelectorAll('.stat-cell-meta')[3].textContent = m.npsLabel;
+  }
+  
+  // Click queue rows
+  document.querySelectorAll('.queue-row').forEach(row => {
+    row.addEventListener('click', () => {
+      document.querySelectorAll('.queue-row').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      const key = row.getAttribute('data-member');
+      if (members[key]) {
+        applyMember(members[key]);
+        // Update URL without reload
+        const url = new URL(window.location);
+        url.searchParams.set('member', key);
+        window.history.replaceState({}, '', url);
+      }
+    });
+  });
+  
+  // Queue tabs
+  document.querySelectorAll('.queue-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.queue-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+  
+  // Click feedback for buttons
+  document.querySelectorAll('.btn, .intervention').forEach(el => {
+    el.addEventListener('click', () => {
+      el.style.transition = 'all 0.1s ease';
+      el.style.transform = 'scale(0.98)';
+      setTimeout(() => { el.style.transform = ''; }, 120);
+    });
+  });
+
+  // ============================================================
+  // TOUR INDICATORS
+  // ============================================================
+  (function() {
+    const TOUR_KEY = 'thirdspace-tour-state';
+    const initialState = localStorage.getItem(TOUR_KEY) || 'on';
+    if (initialState === 'off') document.body.classList.add('tour-off');
+    
+    document.querySelectorAll('[data-tour]').forEach(el => {
+      const computed = getComputedStyle(el);
+      if (computed.position === 'static') el.style.position = 'relative';
+      
+      const label = el.getAttribute('data-tour');
+      const pos = el.getAttribute('data-tour-pos') || 'tr';
+      
+      const pulse = document.createElement('div');
+      pulse.className = 'tour-pulse ' + pos;
+      
+      const labelEl = document.createElement('div');
+      labelEl.className = 'tour-pulse-label';
+      labelEl.innerHTML = label;
+      pulse.appendChild(labelEl);
+      
+      el.appendChild(pulse);
+    });
+    
+    const toggle = document.createElement('div');
+    toggle.className = 'tour-toggle';
+    toggle.innerHTML = '<div class="tour-toggle-dot"></div><span id="tour-toggle-text">Tour: on</span><span class="tour-toggle-key">T</span>';
+    document.body.appendChild(toggle);
+    
+    function updateToggle() {
+      const isOff = document.body.classList.contains('tour-off');
+      const txt = document.getElementById('tour-toggle-text');
+      if (txt) txt.textContent = 'Tour: ' + (isOff ? 'off' : 'on');
+    }
+    updateToggle();
+    
+    function toggleTour() {
+      document.body.classList.toggle('tour-off');
+      localStorage.setItem(TOUR_KEY, document.body.classList.contains('tour-off') ? 'off' : 'on');
+      updateToggle();
+    }
+    
+    toggle.addEventListener('click', toggleTour);
+    document.addEventListener('keydown', (e) => {
+      if (e.key && e.key.toLowerCase() === 't') {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        toggleTour();
+      }
+    });
+  })();
+
+</script>
+
+</body>
+</html>

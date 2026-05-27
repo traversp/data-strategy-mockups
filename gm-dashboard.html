@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canary Wharf · Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400;1,9..144,500&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* warm dark — not pure black, slight bronze undertone */
+    --bg-deep: #0B0A08;
+    --bg-1: #131210;
+    --bg-2: #1A1816;
+    --bg-3: #221F1B;
+    --bg-hover: #2A2622;
+    --line: #2A2723;
+    --line-2: #3A352E;
+    --line-bright: #4A443B;
+    
+    --ink-1: #F4EFE3;
+    --ink-2: #C0B9A8;
+    --ink-3: #8A8576;
+    --ink-4: #5C574E;
+    --ink-5: #3D3933;
+    
+    --bronze: #D4B274;
+    --bronze-2: #B89559;
+    --bronze-dim: #8E7B5C;
+    
+    --good: #7BC495;
+    --good-bg: rgba(123, 196, 149, 0.08);
+    --warn: #E0B26B;
+    --warn-bg: rgba(224, 178, 107, 0.08);
+    --alert: #E08585;
+    --alert-bg: rgba(224, 133, 133, 0.08);
+    
+    --shadow-1: 0 1px 0 rgba(255,255,255,0.04) inset;
+    --shadow-card: 
+      0 1px 0 rgba(255, 240, 220, 0.04) inset,
+      0 0 0 1px rgba(255, 240, 220, 0.02),
+      0 12px 24px rgba(0,0,0,0.18);
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { background: var(--bg-deep); }
+  
+  body {
+    background: var(--bg-deep);
+    color: var(--ink-1);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    font-feature-settings: 'ss01' on, 'cv11' on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    
+    /* Layered ambient background */
+    background-image:
+      radial-gradient(ellipse 1200px 600px at 50% -200px, rgba(212, 178, 116, 0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 800px 800px at 100% 100%, rgba(212, 178, 116, 0.02) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+  
+  /* Subtle dot grid texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(244, 239, 227, 0.018) 1px, transparent 0);
+    background-size: 24px 24px;
+    z-index: 0;
+  }
+  
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 24px 32px 40px;
+  }
+  
+  /* Tabular numerals everywhere by default */
+  .num, [data-num] {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: 'tnum' on, 'lnum' on;
+  }
+  
+  /* ============================================================
+     TOP BAR — slim architectural header
+     ============================================================ */
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 6px 0 22px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 15px;
+    letter-spacing: 0.32em;
+    color: var(--ink-1);
+    text-transform: uppercase;
+    font-feature-settings: 'ss01' on;
+  }
+  
+  .brand-sep {
+    width: 1px;
+    height: 16px;
+    background: var(--line-2);
+  }
+  
+  .product-name {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  .site-switcher {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: var(--shadow-1);
+  }
+  
+  .site-switcher:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+  }
+  
+  .site-name {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--ink-1);
+    font-style: italic;
+    letter-spacing: 0.005em;
+  }
+  
+  .site-meta {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding-left: 10px;
+    border-left: 1px solid var(--line-2);
+  }
+  
+  .topbar-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 10px;
+    background: var(--good-bg);
+    border: 1px solid rgba(123, 196, 149, 0.2);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--good);
+  }
+  
+  .pulse-dot {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 6px rgba(123, 196, 149, 0.6);
+  }
+  
+  .pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: var(--good);
+    opacity: 0.4;
+    animation: ringPulse 2s ease-out infinite;
+  }
+  
+  @keyframes ringPulse {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    100% { transform: scale(3.5); opacity: 0; }
+  }
+  
+  .time-display {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.1;
+  }
+  
+  .time-display .clock {
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-1);
+    letter-spacing: 0.02em;
+  }
+  
+  .time-display .date {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+  
+  .gm-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px 5px 5px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  
+  .gm-chip:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+  }
+  
+  .gm-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bronze) 0%, var(--bronze-2) 100%);
+    color: #1A1816;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  
+  .gm-info {
+    line-height: 1.15;
+  }
+  
+  .gm-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-1);
+  }
+  
+  .gm-role {
+    font-size: 9.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  
+  /* ============================================================
+     EYEBROW / SECTION LABELS
+     ============================================================ */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+  
+  .eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--line) 0%, transparent 100%);
+  }
+  
+  .eyebrow .count {
+    color: var(--bronze);
+    font-weight: 700;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+  }
+  
+  /* ============================================================
+     HERO STATS — the big numbers
+     ============================================================ */
+  .hero-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .stat-card {
+    background: var(--bg-1);
+    padding: 22px 26px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s ease;
+  }
+  
+  .stat-card:hover { background: var(--bg-2); }
+  
+  .stat-card.featured {
+    background: linear-gradient(180deg, #1F1B14 0%, #16130E 100%);
+    position: relative;
+  }
+  
+  .stat-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze) 40%, var(--bronze) 60%, transparent 100%);
+    opacity: 0.5;
+  }
+  
+  .stat-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 18px;
+  }
+  
+  .stat-card.featured .stat-eyebrow { color: var(--bronze); }
+  
+  .stat-badge {
+    font-family: 'Geist Mono', monospace;
+    font-size: 9px;
+    font-weight: 500;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    text-transform: none;
+    padding: 2px 6px;
+    background: var(--bg-2);
+    border-radius: 3px;
+  }
+  
+  .stat-card.featured .stat-badge {
+    background: rgba(212, 178, 116, 0.08);
+    color: var(--bronze);
+    border: 1px solid rgba(212, 178, 116, 0.15);
+  }
+  
+  .stat-value {
+    font-family: 'Geist', sans-serif;
+    font-size: 56px;
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    color: var(--ink-1);
+    font-variant-numeric: tabular-nums lining-nums;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  
+  .stat-value .currency {
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--ink-2);
+  }
+  
+  .stat-value .decimal {
+    font-size: 32px;
+    color: var(--ink-3);
+    font-weight: 300;
+  }
+  
+  .stat-value .unit {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink-3);
+    margin-left: 4px;
+    align-self: center;
+  }
+  
+  .stat-value .sign {
+    color: var(--good);
+    font-weight: 400;
+  }
+  
+  .stat-meta {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  
+  .stat-delta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .delta-line {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .delta-line.up { color: var(--good); }
+  .delta-line.down { color: var(--alert); }
+  .delta-line.flat { color: var(--ink-3); }
+  
+  .delta-arrow {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+  }
+  
+  .delta-detail {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    line-height: 1.4;
+  }
+  
+  .sparkline-wrap {
+    width: 80px;
+    height: 32px;
+    opacity: 0.85;
+  }
+  
+  /* ============================================================
+     ATTENTION ROW
+     ============================================================ */
+  .attention {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  
+  .alert {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  .alert::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 2px;
+    background: var(--ink-4);
+    transition: all 0.2s ease;
+  }
+  
+  .alert.high::before { background: var(--alert); }
+  .alert.med::before { background: var(--warn); }
+  .alert.good::before { background: var(--good); }
+  
+  .alert:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+    transform: translateY(-1px);
+  }
+  
+  .alert:hover::before { width: 3px; }
+  
+  .alert-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  
+  .alert.high .alert-tag { color: var(--alert); }
+  .alert.med .alert-tag { color: var(--warn); }
+  .alert.good .alert-tag { color: var(--good); }
+  
+  .alert-title {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink-1);
+    line-height: 1.2;
+    margin-bottom: 6px;
+    letter-spacing: -0.005em;
+  }
+  
+  .alert-detail {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    line-height: 1.45;
+  }
+  
+  /* ============================================================
+     MAIN GRID — today + pulse
+     ============================================================ */
+  .main {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .panel {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px 26px;
+    box-shadow: var(--shadow-card);
+  }
+  
+  .panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .panel-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink-1);
+    font-style: italic;
+    letter-spacing: -0.005em;
+  }
+  
+  .panel-title.no-italic { font-style: normal; }
+  
+  .panel-sub {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  
+  /* In-club display */
+  .inclub {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 28px;
+    padding-bottom: 22px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .inclub-num {
+    font-family: 'Geist', sans-serif;
+    font-size: 78px;
+    font-weight: 300;
+    line-height: 0.9;
+    color: var(--ink-1);
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums lining-nums;
+    position: relative;
+  }
+  
+  .inclub-num::after {
+    content: '';
+    position: absolute;
+    bottom: 12px;
+    right: -10px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 8px rgba(123, 196, 149, 0.5);
+    animation: gentleBlink 3s ease-in-out infinite;
+  }
+  
+  @keyframes gentleBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .inclub-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .inclub-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  
+  .inclub-bar {
+    display: flex;
+    gap: 2px;
+    height: 6px;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  
+  .inclub-seg {
+    height: 100%;
+  }
+  
+  .inclub-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 11.5px;
+  }
+  
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-2);
+  }
+  
+  .legend-swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 1px;
+  }
+  
+  .legend-num {
+    font-family: 'Geist Mono', monospace;
+    color: var(--ink-1);
+    font-weight: 500;
+    margin-right: 2px;
+  }
+  
+  /* Footfall chart */
+  .chart-wrap {
+    margin-bottom: 28px;
+  }
+  
+  .chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  
+  .chart-title {
+    font-size: 13px;
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  
+  .chart-meta {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .chart-meta b {
+    color: var(--ink-1);
+    font-weight: 600;
+  }
+  
+  .footfall-svg {
+    width: 100%;
+    height: 110px;
+    display: block;
+  }
+  
+  .day-labels {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--ink-4);
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+  
+  .day-labels span.today {
+    color: var(--bronze);
+    font-weight: 600;
+  }
+  
+  /* Classes table */
+  .classes {
+    margin-top: 8px;
+  }
+  
+  .class-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 140px 32px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    gap: 16px;
+    transition: all 0.15s;
+    margin: 0 -8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 4px;
+  }
+  
+  .class-row:last-child { border-bottom: none; }
+  
+  .class-row:hover {
+    background: var(--bg-2);
+    border-bottom-color: transparent;
+  }
+  
+  .class-time {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-1);
+    letter-spacing: 0.01em;
+  }
+  
+  .class-name {
+    font-size: 13.5px;
+    color: var(--ink-1);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  
+  .class-meta {
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  
+  .class-fill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .fill-track {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .fill-bar {
+    height: 100%;
+    background: var(--ink-2);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+  
+  .fill-bar.over { background: var(--alert); }
+  .fill-bar.low { background: var(--warn); }
+  .fill-bar.full { background: var(--good); }
+  
+  .fill-count {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-2);
+    font-weight: 500;
+    min-width: 48px;
+    text-align: right;
+  }
+  
+  .class-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-3);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+  }
+  
+  .class-indicator.over { background: rgba(224, 133, 133, 0.12); color: var(--alert); }
+  .class-indicator.low { background: rgba(224, 178, 107, 0.12); color: var(--warn); }
+  .class-indicator.full { background: rgba(123, 196, 149, 0.12); color: var(--good); }
+  
+  /* ============================================================
+     MEMBER PULSE
+     ============================================================ */
+  .pulse-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 18px 0;
+    margin-bottom: 22px;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+  
+  .pulse-stat {
+    text-align: center;
+    padding: 0 4px;
+    position: relative;
+  }
+  
+  .pulse-stat + .pulse-stat::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    width: 1px;
+    background: var(--line);
+  }
+  
+  .pulse-val {
+    font-family: 'Geist', sans-serif;
+    font-size: 36px;
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  
+  .pulse-val .sign { font-weight: 400; opacity: 0.85; }
+  
+  .pulse-val.up { color: var(--good); }
+  .pulse-val.down { color: var(--alert); }
+  
+  .pulse-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  
+  /* At-risk list */
+  .risk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  
+  .risk-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-1);
+    letter-spacing: -0.005em;
+  }
+  
+  .risk-count {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    color: var(--bronze);
+    font-weight: 500;
+  }
+  
+  .risk-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 12px 8px;
+    margin: 0 -8px;
+    border-radius: 5px;
+    border-bottom: 1px solid var(--line);
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .risk-row:last-child { border-bottom: none; }
+  
+  .risk-row:hover {
+    background: var(--bg-2);
+    border-bottom-color: transparent;
+  }
+  
+  .risk-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: var(--ink-5);
+    border-radius: 1px;
+  }
+  
+  .risk-row.severity-high::before { background: var(--alert); }
+  .risk-row.severity-med::before { background: var(--warn); }
+  
+  .risk-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-1);
+    margin-bottom: 3px;
+    padding-left: 8px;
+  }
+  
+  .risk-name .tier {
+    color: var(--ink-3);
+    font-weight: 400;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+  
+  .risk-detail {
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    padding-left: 8px;
+  }
+  
+  .risk-score-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  
+  .risk-score {
+    font-family: 'Geist', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--alert);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  
+  .risk-score.med { color: var(--warn); }
+  
+  .risk-score .percent {
+    font-size: 11px;
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+  
+  .risk-window {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+  
+  .risk-cta {
+    margin-top: 16px;
+    padding: 11px 14px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bronze);
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  
+  .risk-cta:hover {
+    background: var(--bg-3);
+    color: var(--ink-1);
+    border-color: var(--bronze-dim);
+  }
+  
+  /* ============================================================
+     AI OBSERVATIONS — the showcase
+     ============================================================ */
+  .ai-panel {
+    background: 
+      radial-gradient(circle at 0% 0%, rgba(212, 178, 116, 0.08) 0%, transparent 40%),
+      linear-gradient(180deg, #1A1612 0%, #110F0C 100%);
+    border: 1px solid rgba(212, 178, 116, 0.15);
+    border-radius: 10px;
+    padding: 26px 30px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+      0 1px 0 rgba(212, 178, 116, 0.1) inset,
+      0 12px 32px rgba(0,0,0,0.3);
+  }
+  
+  .ai-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze) 30%, var(--bronze) 70%, transparent 100%);
+    opacity: 0.6;
+  }
+  
+  .ai-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  
+  .ai-head-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .ai-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--ink-1);
+    font-style: italic;
+    letter-spacing: -0.005em;
+  }
+  
+  .ai-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    padding: 4px 10px;
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    background: rgba(212, 178, 116, 0.05);
+  }
+  
+  .ai-badge .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+    animation: gentleBlink 2s ease-in-out infinite;
+  }
+  
+  .ai-ask-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: rgba(212, 178, 116, 0.06);
+    border: 1px solid rgba(212, 178, 116, 0.2);
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--bronze);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  
+  .ai-ask-link:hover {
+    background: rgba(212, 178, 116, 0.12);
+    border-color: var(--bronze);
+    color: var(--ink-1);
+  }
+  
+  .ai-ask-link .arrow {
+    font-family: 'Geist Mono', monospace;
+    transition: transform 0.15s;
+  }
+  
+  .ai-ask-link:hover .arrow { transform: translateX(2px); }
+  
+  .ai-sub {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    margin-bottom: 22px;
+    letter-spacing: 0.01em;
+  }
+  
+  .ai-obs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(212, 178, 116, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .observation {
+    background: linear-gradient(180deg, rgba(255,255,255,0.01) 0%, transparent 100%);
+    padding: 20px 22px;
+    transition: background 0.2s;
+  }
+  
+  .observation:hover {
+    background: linear-gradient(180deg, rgba(212, 178, 116, 0.04) 0%, transparent 100%);
+  }
+  
+  .obs-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  
+  .obs-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+  }
+  
+  .obs-category::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--bronze);
+  }
+  
+  .obs-time {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+  }
+  
+  .obs-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin-bottom: 16px;
+    letter-spacing: -0.005em;
+  }
+  
+  .obs-text b {
+    color: var(--ink-1);
+    font-weight: 600;
+  }
+  
+  .obs-text em {
+    color: var(--bronze);
+    font-style: normal;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .obs-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--bronze);
+    cursor: pointer;
+    padding: 4px 0;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+  
+  .obs-action:hover {
+    color: var(--ink-1);
+  }
+  
+  .obs-action::after {
+    content: '→';
+    font-family: 'Geist Mono', monospace;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .obs-action:hover::after {
+    transform: translateX(4px);
+  }
+  
+  /* ============================================================
+     BOTTOM GRID
+     ============================================================ */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+  
+  /* P&L */
+  .pl-hero {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .pl-total {
+    font-family: 'Geist', sans-serif;
+    font-size: 44px;
+    font-weight: 300;
+    color: var(--ink-1);
+    line-height: 1;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.025em;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  
+  .pl-total .currency {
+    font-size: 26px;
+    color: var(--ink-2);
+  }
+  
+  .pl-total .decimal {
+    font-size: 26px;
+    color: var(--ink-3);
+  }
+  
+  .pl-sub {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  
+  .pl-progress {
+    flex: 1;
+    height: 3px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    overflow: hidden;
+    max-width: 120px;
+    position: relative;
+  }
+  
+  .pl-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bronze) 0%, var(--bronze-2) 100%);
+    width: 87%;
+  }
+  
+  .pl-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    padding: 9px 0;
+    align-items: center;
+    gap: 14px;
+    font-size: 12.5px;
+  }
+  
+  .pl-row + .pl-row { border-top: 1px solid var(--line); }
+  
+  .pl-label {
+    color: var(--ink-2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .pl-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ink-4);
+  }
+  
+  .pl-value {
+    font-family: 'Geist Mono', monospace;
+    color: var(--ink-1);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .pl-vs {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    min-width: 56px;
+    text-align: right;
+    color: var(--ink-3);
+  }
+  
+  .pl-vs.up { color: var(--good); }
+  .pl-vs.down { color: var(--alert); }
+  
+  .pl-total-row {
+    border-top: 1px solid var(--line-bright) !important;
+    margin-top: 6px;
+    padding-top: 14px !important;
+  }
+  
+  .pl-total-row .pl-label { color: var(--ink-1); font-weight: 600; }
+  .pl-total-row .pl-value { color: var(--bronze); font-weight: 600; font-size: 14px; }
+  .pl-total-row .pl-vs { color: var(--ink-2); }
+  
+  /* PT Utilisation */
+  .pt-hero {
+    margin-bottom: 22px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  
+  .pt-hero-num {
+    font-family: 'Geist', sans-serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--ink-1);
+    line-height: 0.9;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    display: flex;
+    align-items: baseline;
+  }
+  
+  .pt-hero-num .unit { font-size: 28px; color: var(--ink-3); margin-left: 2px; }
+  
+  .pt-hero-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .pt-hero-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  
+  .pt-hero-detail {
+    font-size: 11.5px;
+    color: var(--ink-2);
+  }
+  
+  .pt-row {
+    display: grid;
+    grid-template-columns: 1fr 130px 36px;
+    padding: 10px 0;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+    gap: 12px;
+  }
+  
+  .pt-row:last-child { border-bottom: none; }
+  
+  .pt-name {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-1);
+    margin-bottom: 2px;
+  }
+  
+  .pt-name .role {
+    font-size: 10px;
+    color: var(--ink-4);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    margin-left: 4px;
+  }
+  
+  .pt-sub {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .pt-bar {
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  
+  .pt-bar-fill {
+    height: 100%;
+    background: var(--ink-2);
+    transition: width 0.3s;
+  }
+  
+  .pt-bar-fill.high { background: var(--good); }
+  .pt-bar-fill.low { background: var(--warn); }
+  
+  .pt-pct {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-1);
+    font-weight: 500;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .footer {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  
+  .sources {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+  }
+  
+  .source {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10.5px;
+  }
+  
+  .source-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 4px rgba(123, 196, 149, 0.5);
+  }
+  
+  .source-dot.warn { background: var(--warn); box-shadow: 0 0 4px rgba(224, 178, 107, 0.5); }
+  
+  .source-name {
+    color: var(--ink-2);
+  }
+  
+  .source-meta {
+    color: var(--ink-4);
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+  }
+  
+  .refresh {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-3);
+  }
+  
+  .refresh .num {
+    color: var(--ink-1);
+    font-weight: 500;
+  }
+  
+  /* Entrance animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .topbar, .hero-row, .attention, .main, .ai-panel, .bottom-grid, .footer {
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero-row { animation-delay: 0.05s; }
+  .attention { animation-delay: 0.1s; }
+  .main { animation-delay: 0.15s; }
+  .ai-panel { animation-delay: 0.2s; }
+  .bottom-grid { animation-delay: 0.25s; }
+  .footer { animation-delay: 0.3s; }
+  
+  /* Tooltip for chart */
+  .chart-tip {
+    position: absolute;
+    background: var(--bg-3);
+    border: 1px solid var(--line-bright);
+    color: var(--ink-1);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'Geist Mono', monospace;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    white-space: nowrap;
+  }
+  
+  .chart-tip.show { opacity: 1; }
+  
+  /* ============================================================
+     TOUR INDICATORS — pulse markers on clickable demo elements
+     ============================================================ */
+  .tour-pulse {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 0 2px rgba(11, 10, 8, 0.85), 0 0 12px var(--bronze);
+    z-index: 100;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tour-pulse::before, .tour-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+  }
+  .tour-pulse::before { animation: tourRing 2.4s ease-out infinite; }
+  .tour-pulse::after { animation: tourRing 2.4s ease-out infinite 1.2s; }
+  @keyframes tourRing {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(3.4); opacity: 0; }
+  }
+  .tour-pulse:hover { transform: scale(1.3); }
+  .tour-pulse-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1A1816;
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    color: var(--ink-1);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Geist', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    letter-spacing: 0.01em;
+  }
+  .tour-pulse-label .arrow {
+    color: var(--bronze);
+    font-family: 'Geist Mono', monospace;
+    margin: 0 4px 0 2px;
+  }
+  .tour-pulse:hover .tour-pulse-label { opacity: 1; }
+  .tour-pulse.tl { top: -6px; left: -6px; }
+  .tour-pulse.tl .tour-pulse-label { left: calc(100% + 12px); }
+  .tour-pulse.tl .tour-pulse-label::before { content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-right-color: #1A1816; }
+  .tour-pulse.tr { top: -6px; right: -6px; }
+  .tour-pulse.tr .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.tr .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  .tour-pulse.center-r { top: 50%; right: -6px; transform: translateY(-50%); }
+  .tour-pulse.center-r:hover { transform: translateY(-50%) scale(1.3); }
+  .tour-pulse.center-r .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.center-r .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  body.tour-off .tour-pulse { display: none; }
+  
+  .tour-toggle {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px 9px 11px;
+    background: rgba(26, 24, 22, 0.95);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--ink-1);
+    font-family: 'Geist', sans-serif;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    user-select: none;
+  }
+  .tour-toggle:hover { border-color: var(--bronze); transform: translateY(-1px); }
+  .tour-toggle-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  .tour-toggle-dot::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+    animation: tourRing 2.4s ease-out infinite;
+  }
+  body.tour-off .tour-toggle-dot { background: var(--ink-4); box-shadow: none; }
+  body.tour-off .tour-toggle-dot::after { display: none; }
+  body.tour-off .tour-toggle { color: var(--ink-3); border-color: rgba(255,255,255,0.08); }
+  .tour-toggle-key {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    padding: 1px 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  
+  <!-- ============================================================
+       TOP BAR
+       ============================================================ -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="wordmark">Third&nbsp;Space</div>
+      <div class="brand-sep"></div>
+      <div class="product-name">Operations</div>
+    </div>
+    
+    <div class="site-switcher" title="Switch site">
+      <div class="site-name">Canary Wharf</div>
+      <div class="site-meta">GM &nbsp;·&nbsp; Live</div>
+    </div>
+    
+    <div class="topbar-right">
+      <div class="live-pill">
+        <div class="pulse-dot"></div>
+        <span>Live</span>
+      </div>
+      <div class="time-display">
+        <div class="clock" id="clock">09:14:32</div>
+        <div class="date" id="datestr">Tue · 26 Nov</div>
+      </div>
+      <div class="gm-chip">
+        <div class="gm-avatar">JP</div>
+        <div class="gm-info">
+          <div class="gm-name">JP Singh</div>
+          <div class="gm-role">General Manager</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ============================================================
+       HERO STATS
+       ============================================================ -->
+  <section class="hero-row">
+    <div class="stat-card featured">
+      <div class="stat-eyebrow">
+        <span>Active Members</span>
+        <span class="stat-badge">vs target</span>
+      </div>
+      <div class="stat-value num"><span>1,247</span></div>
+      <div class="stat-meta">
+        <div class="stat-delta">
+          <div class="delta-line down">
+            <span class="delta-arrow">↓</span>
+            <span>−53 of 1,300</span>
+          </div>
+          <div class="delta-detail">Founder 412 &nbsp;·&nbsp; Premium 528 &nbsp;·&nbsp; Core 307</div>
+        </div>
+        <svg class="sparkline-wrap" viewBox="0 0 80 32" fill="none">
+          <defs>
+            <linearGradient id="gradHero" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#D4B274" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#D4B274" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,18 L10,20 L20,16 L30,17 L40,14 L50,15 L60,12 L70,10 L80,12 L80,32 L0,32 Z" fill="url(#gradHero)"/>
+          <polyline points="0,18 10,20 20,16 30,17 40,14 50,15 60,12 70,10 80,12" stroke="#D4B274" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-eyebrow">
+        <span>MTD Revenue</span>
+        <span class="stat-badge">26 days</span>
+      </div>
+      <div class="stat-value num"><span class="currency">£</span><span>338</span><span class="decimal">,142</span></div>
+      <div class="stat-meta">
+        <div class="stat-delta">
+          <div class="delta-line down">
+            <span class="delta-arrow">↓</span>
+            <span>−£17k vs forecast</span>
+          </div>
+          <div class="delta-detail">PT pacing −12% &nbsp;·&nbsp; Membership on track</div>
+        </div>
+        <svg class="sparkline-wrap" viewBox="0 0 80 32" fill="none">
+          <polyline points="0,24 10,22 20,19 30,17 40,15 50,13 60,11 70,9 80,12" stroke="#8A8576" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-eyebrow">
+        <span>Visit Frequency</span>
+        <span class="stat-badge">7-day</span>
+      </div>
+      <div class="stat-value num"><span>4.3</span><span class="unit">/wk</span></div>
+      <div class="stat-meta">
+        <div class="stat-delta">
+          <div class="delta-line up">
+            <span class="delta-arrow">↑</span>
+            <span>+0.4 vs 90-day</span>
+          </div>
+          <div class="delta-detail">Strongest Tue, Thu evenings</div>
+        </div>
+        <svg class="sparkline-wrap" viewBox="0 0 80 32" fill="none">
+          <polyline points="0,22 10,21 20,18 30,19 40,17 50,15 60,14 70,12 80,10" stroke="#8A8576" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-eyebrow">
+        <span>Member NPS</span>
+        <span class="stat-badge">142 resp</span>
+      </div>
+      <div class="stat-value num"><span class="sign">+</span><span>62</span></div>
+      <div class="stat-meta">
+        <div class="stat-delta">
+          <div class="delta-line down">
+            <span class="delta-arrow">↓</span>
+            <span>−3 vs target +65</span>
+          </div>
+          <div class="delta-detail">Class quality top driver</div>
+        </div>
+        <svg class="sparkline-wrap" viewBox="0 0 80 32" fill="none">
+          <polyline points="0,12 10,14 20,13 30,11 40,13 50,14 60,15 70,16 80,14" stroke="#8A8576" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ============================================================
+       ATTENTION
+       ============================================================ -->
+  <div class="eyebrow">
+    Needs Attention <span class="count">·  4</span>
+  </div>
+  
+  <section class="attention">
+    <a href="churn-console.html" class="alert high" data-tour="<span class='arrow'>→</span>Console" data-tour-pos="tr">
+      <div class="alert-tag">
+        <span>●</span> Member Risk
+      </div>
+      <div class="alert-title">23 members at risk</div>
+      <div class="alert-detail">7 Founder-tier &nbsp;·&nbsp; churn model flagged this week</div>
+    </a>
+    <div class="alert med">
+      <div class="alert-tag">
+        <span>●</span> Class Capacity
+      </div>
+      <div class="alert-title">Slow flow at 18:30</div>
+      <div class="alert-detail">Reformer Pilates 41% booked &nbsp;·&nbsp; typically 85%+</div>
+    </div>
+    <div class="alert med">
+      <div class="alert-tag">
+        <span>●</span> Revenue Pace
+      </div>
+      <div class="alert-title">£18k behind MTD</div>
+      <div class="alert-detail">PT package sales pacing 12% under forecast</div>
+    </div>
+    <div class="alert good">
+      <div class="alert-tag">
+        <span>●</span> Waitlist
+      </div>
+      <div class="alert-title">3 conversions yesterday</div>
+      <div class="alert-detail">Founder slots &nbsp;·&nbsp; fastest in 6 weeks</div>
+    </div>
+  </section>
+  
+  <!-- ============================================================
+       MAIN GRID
+       ============================================================ -->
+  <section class="main">
+    
+    <!-- TODAY -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Today.</div>
+        <div class="panel-sub">Tue · 26 Nov · open 06:00 – 22:30</div>
+      </div>
+      
+      <div class="inclub">
+        <div class="inclub-num num">87</div>
+        <div class="inclub-info">
+          <div class="inclub-label">In Club Now</div>
+          <div class="inclub-bar">
+            <div class="inclub-seg" style="width: 60%; background: #D4B274;"></div>
+            <div class="inclub-seg" style="width: 25%; background: #8A8576;"></div>
+            <div class="inclub-seg" style="width: 5%; background: #7BC495;"></div>
+            <div class="inclub-seg" style="width: 10%; background: #5C574E;"></div>
+          </div>
+          <div class="inclub-legend">
+            <div class="legend-item"><div class="legend-swatch" style="background:#D4B274"></div><span class="legend-num">52</span>Gym</div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#8A8576"></div><span class="legend-num">22</span>Class</div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#7BC495"></div><span class="legend-num">4</span>PT</div>
+            <div class="legend-item"><div class="legend-swatch" style="background:#5C574E"></div><span class="legend-num">9</span>Spa</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="chart-wrap">
+        <div class="chart-head">
+          <div class="chart-title">Footfall · last 7 days</div>
+          <div class="chart-meta">Today projected <b>412</b> &nbsp;·&nbsp; 7-day avg 386</div>
+        </div>
+        <svg class="footfall-svg" viewBox="0 0 800 110" preserveAspectRatio="none" id="footfall-chart">
+          <defs>
+            <linearGradient id="ffGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#D4B274" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#D4B274" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="ffGradGrey" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8A8576" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#8A8576" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          
+          <!-- Background grid lines -->
+          <line x1="0" y1="30" x2="800" y2="30" stroke="#2A2723" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <line x1="0" y1="60" x2="800" y2="60" stroke="#2A2723" stroke-width="0.5" stroke-dasharray="2 4"/>
+          <line x1="0" y1="90" x2="800" y2="90" stroke="#2A2723" stroke-width="0.5" stroke-dasharray="2 4"/>
+          
+          <!-- Historical area (Wed–Mon) -->
+          <path d="M 50,55 L 150,38 L 250,60 L 350,72 L 450,78 L 550,48 L 600,68 L 600,110 L 50,110 Z" fill="url(#ffGradGrey)"/>
+          <polyline points="50,55 150,38 250,60 350,72 450,78 550,48 600,68" stroke="#8A8576" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+          
+          <!-- Today projected area -->
+          <path d="M 600,68 L 650,72 L 750,42 L 750,110 L 600,110 Z" fill="url(#ffGrad)"/>
+          <polyline points="600,68 650,72 750,42" stroke="#D4B274" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="3 3"/>
+          
+          <!-- Dots on data points -->
+          <circle cx="50" cy="55" r="3" fill="#1A1816" stroke="#8A8576" stroke-width="1.5" data-tip="Wed: 376"/>
+          <circle cx="150" cy="38" r="3" fill="#1A1816" stroke="#8A8576" stroke-width="1.5" data-tip="Thu: 421"/>
+          <circle cx="250" cy="60" r="3" fill="#1A1816" stroke="#8A8576" stroke-width="1.5" data-tip="Fri: 358"/>
+          <circle cx="350" cy="72" r="3" fill="#1A1816" stroke="#8A8576" stroke-width="1.5" data-tip="Sat: 312"/>
+          <circle cx="450" cy="78" r="3" fill="#1A1816" stroke="#8A8576" stroke-width="1.5" data-tip="Sun: 276"/>
+          <circle cx="550" cy="48" r="3" fill="#1A1816" stroke="#8A8576" stroke-width="1.5" data-tip="Mon: 392"/>
+          <circle cx="650" cy="72" r="4" fill="#D4B274" data-tip="Today so far: 198"/>
+          <circle cx="750" cy="42" r="3" fill="#1A1816" stroke="#D4B274" stroke-width="1.5" stroke-dasharray="2 2" data-tip="Projected: 412"/>
+        </svg>
+        <div class="day-labels">
+          <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span class="today">Today</span><span>+proj</span>
+        </div>
+      </div>
+      
+      <div class="eyebrow" style="margin-top: 28px;">
+        Classes Today <span class="count">·  22</span>
+      </div>
+      
+      <div class="classes">
+        <div class="class-row">
+          <div class="class-time">07:00</div>
+          <div>
+            <div class="class-name">Reformer Pilates</div>
+            <div class="class-meta">Eva Lindberg &nbsp;·&nbsp; Studio 2 &nbsp;·&nbsp; 45 min</div>
+          </div>
+          <div class="class-fill">
+            <div class="fill-track"><div class="fill-bar full" style="width: 100%"></div></div>
+            <div class="fill-count">14 / 14</div>
+          </div>
+          <div class="class-indicator full">F</div>
+        </div>
+        <div class="class-row">
+          <div class="class-time">07:30</div>
+          <div>
+            <div class="class-name">Vinyasa Flow</div>
+            <div class="class-meta">Aiden Frost &nbsp;·&nbsp; Studio 1 &nbsp;·&nbsp; 60 min</div>
+          </div>
+          <div class="class-fill">
+            <div class="fill-track"><div class="fill-bar over" style="width: 100%"></div></div>
+            <div class="fill-count">22 / 21</div>
+          </div>
+          <div class="class-indicator over">!</div>
+        </div>
+        <div class="class-row">
+          <div class="class-time">12:30</div>
+          <div>
+            <div class="class-name">HIIT 45</div>
+            <div class="class-meta">Marcus K &nbsp;·&nbsp; Performance Hall &nbsp;·&nbsp; 45 min</div>
+          </div>
+          <div class="class-fill">
+            <div class="fill-track"><div class="fill-bar full" style="width: 86%"></div></div>
+            <div class="fill-count">19 / 22</div>
+          </div>
+          <div class="class-indicator full">●</div>
+        </div>
+        <div class="class-row">
+          <div class="class-time">18:00</div>
+          <div>
+            <div class="class-name">Boxing Conditioning</div>
+            <div class="class-meta">Femi Adeyemi &nbsp;·&nbsp; Box Studio &nbsp;·&nbsp; 50 min</div>
+          </div>
+          <div class="class-fill">
+            <div class="fill-track"><div class="fill-bar" style="width: 73%"></div></div>
+            <div class="fill-count">11 / 15</div>
+          </div>
+          <div class="class-indicator">●</div>
+        </div>
+        <div class="class-row">
+          <div class="class-time">18:30</div>
+          <div>
+            <div class="class-name">Reformer Pilates</div>
+            <div class="class-meta">Eva Lindberg &nbsp;·&nbsp; Studio 2 &nbsp;·&nbsp; 45 min</div>
+          </div>
+          <div class="class-fill">
+            <div class="fill-track"><div class="fill-bar low" style="width: 41%"></div></div>
+            <div class="fill-count">6 / 14</div>
+          </div>
+          <div class="class-indicator low">↓</div>
+        </div>
+        <div class="class-row">
+          <div class="class-time">19:00</div>
+          <div>
+            <div class="class-name">Strength & Sculpt</div>
+            <div class="class-meta">Priya Iyer &nbsp;·&nbsp; Performance Hall &nbsp;·&nbsp; 50 min</div>
+          </div>
+          <div class="class-fill">
+            <div class="fill-track"><div class="fill-bar full" style="width: 91%"></div></div>
+            <div class="fill-count">20 / 22</div>
+          </div>
+          <div class="class-indicator full">●</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- MEMBER PULSE -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Member Pulse.</div>
+        <div class="panel-sub">Week to date</div>
+      </div>
+      
+      <div class="pulse-stats">
+        <div class="pulse-stat">
+          <div class="pulse-val up num"><span class="sign">+</span>14</div>
+          <div class="pulse-label">Joiners</div>
+        </div>
+        <div class="pulse-stat">
+          <div class="pulse-val down num"><span class="sign">−</span>8</div>
+          <div class="pulse-label">Leavers</div>
+        </div>
+        <div class="pulse-stat">
+          <div class="pulse-val num"><span class="sign">+</span>6</div>
+          <div class="pulse-label">Net</div>
+        </div>
+      </div>
+      
+      <div class="risk-header">
+        <div class="risk-title">At Risk This Week</div>
+        <div class="risk-count">23 flagged · top 5</div>
+      </div>
+      
+      <a href="churn-console.html?member=sarah-jones" class="risk-row severity-high" data-tour="<span class='arrow'>→</span>Console: Sarah" data-tour-pos="center-r">
+        <div>
+          <div class="risk-name">Sarah Jones <span class="tier">· Founder</span></div>
+          <div class="risk-detail">Last visit 9d &nbsp;·&nbsp; visits ↓ 67% MoM &nbsp;·&nbsp; member 4y</div>
+        </div>
+        <div class="risk-score-wrap">
+          <div class="risk-score num">73<span class="percent">%</span></div>
+          <div class="risk-window">30d risk</div>
+        </div>
+      </a>
+      <a href="churn-console.html?member=james-mitchell" class="risk-row severity-high" data-tour="<span class='arrow'>→</span>Console: James" data-tour-pos="center-r">
+        <div>
+          <div class="risk-name">James Mitchell <span class="tier">· Premium</span></div>
+          <div class="risk-detail">3 visits this month &nbsp;·&nbsp; typically 12 &nbsp;·&nbsp; PT lapsed</div>
+        </div>
+        <div class="risk-score-wrap">
+          <div class="risk-score num">68<span class="percent">%</span></div>
+          <div class="risk-window">30d risk</div>
+        </div>
+      </a>
+      <a href="churn-console.html?member=aisha-patel" class="risk-row severity-high" data-tour="<span class='arrow'>→</span>Console: Aisha" data-tour-pos="center-r">
+        <div>
+          <div class="risk-name">Aisha Patel <span class="tier">· Founder</span></div>
+          <div class="risk-detail">Last visit 14d &nbsp;·&nbsp; submitted Detractor NPS</div>
+        </div>
+        <div class="risk-score-wrap">
+          <div class="risk-score num">64<span class="percent">%</span></div>
+          <div class="risk-window">30d risk</div>
+        </div>
+      </a>
+      <a href="churn-console.html?member=tom-williamson" class="risk-row severity-med" data-tour="<span class='arrow'>→</span>Console: Tom" data-tour-pos="center-r">
+        <div>
+          <div class="risk-name">Tom Williamson <span class="tier">· Core</span></div>
+          <div class="risk-detail">DD failed twice &nbsp;·&nbsp; no contact 11d</div>
+        </div>
+        <div class="risk-score-wrap">
+          <div class="risk-score med num">58<span class="percent">%</span></div>
+          <div class="risk-window">30d risk</div>
+        </div>
+      </a>
+      <a href="churn-console.html?member=lina-bauer" class="risk-row severity-med" data-tour="<span class='arrow'>→</span>Console: Lina" data-tour-pos="center-r">
+        <div>
+          <div class="risk-name">Lina Bauer <span class="tier">· Premium</span></div>
+          <div class="risk-detail">Booking cancellations ↑ &nbsp;·&nbsp; classes ↓ 50%</div>
+        </div>
+        <div class="risk-score-wrap">
+          <div class="risk-score med num">54<span class="percent">%</span></div>
+          <div class="risk-window">30d risk</div>
+        </div>
+      </a>
+      
+      <a href="churn-console.html" class="risk-cta" data-tour="<span class='arrow'>→</span>Console: full queue" data-tour-pos="tr">
+        Open intervention console <span>→</span>
+      </a>
+    </div>
+  </section>
+  
+  <!-- ============================================================
+       AI OBSERVATIONS — full width hero
+       ============================================================ -->
+  <section class="ai-panel">
+    <div class="ai-head">
+      <div class="ai-head-left">
+        <div class="ai-title">Observations.</div>
+        <div class="ai-badge">
+          <div class="dot"></div>
+          <span>AI · Live</span>
+        </div>
+      </div>
+      <a href="ask-third-space.html" class="ai-ask-link" data-tour="<span class='arrow'>→</span>Ask: assistant" data-tour-pos="tr">
+        Ask follow-up
+        <span class="arrow">→</span>
+      </a>
+    </div>
+    <div class="ai-sub">Patterns surfaced from member, class, PT and finance data over the past 7 days</div>
+    
+    <div class="ai-obs-grid">
+      <div class="observation">
+        <div class="obs-meta">
+          <div class="obs-category">Member Engagement</div>
+          <div class="obs-time">3m ago</div>
+        </div>
+        <div class="obs-text">
+          <b>11 of 23 at-risk members</b> share a pattern — Founder tier, joined <em>2021–2022</em>, strength training drop-off in last 6 weeks. Personalised PT outreach has <em>41%</em> recovery rate for this cohort historically.
+        </div>
+        <div class="obs-action">Draft outreach campaign</div>
+      </div>
+      
+      <div class="observation">
+        <div class="obs-meta">
+          <div class="obs-category">Class Programming</div>
+          <div class="obs-time">2h ago</div>
+        </div>
+        <div class="obs-text">
+          <b>Vinyasa Flow 07:30</b> over-booked for <em>4 consecutive</em> Tuesdays — average 21.5/21. Adding an 08:15 slot would capture <em>~9</em> additional members based on waitlist pattern.
+        </div>
+        <div class="obs-action">Model the slot</div>
+      </div>
+      
+      <div class="observation">
+        <div class="obs-meta">
+          <div class="obs-category">PT Performance</div>
+          <div class="obs-time">Yesterday</div>
+        </div>
+        <div class="obs-text">
+          <b>Marcus K</b> intro → paid conversion dropped from <em>68%</em> to <em>41%</em> over last 14 days. Booking patterns suggest schedule conflict with 18:00 HIIT. Worth a check-in.
+        </div>
+        <div class="obs-action">Schedule 1:1</div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ============================================================
+       BOTTOM GRID
+       ============================================================ -->
+  <section class="bottom-grid">
+    
+    <!-- P&L -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Site P&L.</div>
+        <div class="panel-sub">Month to date</div>
+      </div>
+      
+      <div class="pl-hero">
+        <div class="pl-total num"><span class="currency">£</span><span>338</span><span class="decimal">,142</span></div>
+        <div class="pl-sub">
+          <span>Day 26 of 30</span>
+          <div class="pl-progress"><div class="pl-progress-fill"></div></div>
+          <span>87% through</span>
+        </div>
+      </div>
+      
+      <div class="pl-row">
+        <div class="pl-label"><div class="pl-dot" style="background:#D4B274"></div>Membership</div>
+        <div class="pl-value">£241,820</div>
+        <div class="pl-vs up">+£2.1k</div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-label"><div class="pl-dot" style="background:#7BC495"></div>PT & coaching</div>
+        <div class="pl-value">£48,604</div>
+        <div class="pl-vs down">−£6.8k</div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-label"><div class="pl-dot" style="background:#E0B26B"></div>Classes</div>
+        <div class="pl-value">£22,180</div>
+        <div class="pl-vs down">−£1.2k</div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-label"><div class="pl-dot" style="background:#8A8576"></div>Spa & wellness</div>
+        <div class="pl-value">£14,332</div>
+        <div class="pl-vs up">+£0.8k</div>
+      </div>
+      <div class="pl-row">
+        <div class="pl-label"><div class="pl-dot" style="background:#5C574E"></div>Food & retail</div>
+        <div class="pl-value">£11,206</div>
+        <div class="pl-vs down">−£0.4k</div>
+      </div>
+      
+      <div class="pl-row pl-total-row">
+        <div class="pl-label">Contribution margin</div>
+        <div class="pl-value">£231,624</div>
+        <div class="pl-vs">68.5%</div>
+      </div>
+    </div>
+    
+    <!-- PT Utilisation -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">PT Utilisation.</div>
+        <div class="panel-sub">Today · 6 PTs on shift</div>
+      </div>
+      
+      <div class="pt-hero">
+        <div class="pt-hero-num num">71<span class="unit">%</span></div>
+        <div class="pt-hero-info">
+          <div class="pt-hero-label">Floor Utilisation</div>
+          <div class="pt-hero-detail"><b style="color:var(--ink-1)">28</b> of 40 slots booked today &nbsp;·&nbsp; 4 currently in session</div>
+        </div>
+      </div>
+      
+      <div class="pt-row">
+        <div>
+          <div class="pt-name">Marcus K <span class="role">Senior PT</span></div>
+          <div class="pt-sub">8 / 8 slots booked</div>
+        </div>
+        <div class="pt-bar"><div class="pt-bar-fill high" style="width: 100%"></div></div>
+        <div class="pt-pct">100</div>
+      </div>
+      <div class="pt-row">
+        <div>
+          <div class="pt-name">Priya Iyer <span class="role">PT II</span></div>
+          <div class="pt-sub">7 / 8 slots booked</div>
+        </div>
+        <div class="pt-bar"><div class="pt-bar-fill high" style="width: 88%"></div></div>
+        <div class="pt-pct">88</div>
+      </div>
+      <div class="pt-row">
+        <div>
+          <div class="pt-name">Femi Adeyemi <span class="role">PT II</span></div>
+          <div class="pt-sub">6 / 8 slots booked</div>
+        </div>
+        <div class="pt-bar"><div class="pt-bar-fill" style="width: 75%"></div></div>
+        <div class="pt-pct">75</div>
+      </div>
+      <div class="pt-row">
+        <div>
+          <div class="pt-name">Eva Lindberg <span class="role">PT I</span></div>
+          <div class="pt-sub">5 / 8 slots booked</div>
+        </div>
+        <div class="pt-bar"><div class="pt-bar-fill" style="width: 63%"></div></div>
+        <div class="pt-pct">63</div>
+      </div>
+      <div class="pt-row">
+        <div>
+          <div class="pt-name">Aiden Frost <span class="role">PT I</span></div>
+          <div class="pt-sub">2 / 8 slots booked</div>
+        </div>
+        <div class="pt-bar"><div class="pt-bar-fill low" style="width: 25%"></div></div>
+        <div class="pt-pct">25</div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <div class="footer">
+    <div class="sources">
+      <div class="source">
+        <div class="source-dot"></div>
+        <span class="source-name">Platform DB</span>
+        <span class="source-meta">live</span>
+      </div>
+      <div class="source">
+        <div class="source-dot"></div>
+        <span class="source-name">Member App</span>
+        <span class="source-meta">live</span>
+      </div>
+      <div class="source">
+        <div class="source-dot"></div>
+        <span class="source-name">Finance</span>
+        <span class="source-meta">6m</span>
+      </div>
+      <div class="source">
+        <div class="source-dot warn"></div>
+        <span class="source-name">NPS</span>
+        <span class="source-meta">daily</span>
+      </div>
+    </div>
+    <div class="refresh">
+      Refresh in <span class="num" id="refresh-counter">42</span>s &nbsp;·&nbsp; v1.4
+    </div>
+  </div>
+  
+</div>
+
+<div class="chart-tip" id="chart-tip"></div>
+
+<script>
+  // Live clock
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function updateClock() {
+    const now = new Date();
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    document.getElementById('clock').textContent = 
+      `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    document.getElementById('datestr').textContent = 
+      `${days[now.getDay()]} · ${now.getDate()} ${months[now.getMonth()]}`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+  
+  // Refresh countdown
+  let counter = 42;
+  setInterval(() => {
+    counter--;
+    if (counter < 0) counter = 60;
+    document.getElementById('refresh-counter').textContent = counter;
+  }, 1000);
+  
+  // Chart tooltips
+  const tip = document.getElementById('chart-tip');
+  document.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('mouseenter', (e) => {
+      tip.textContent = el.getAttribute('data-tip');
+      tip.classList.add('show');
+    });
+    el.addEventListener('mousemove', (e) => {
+      tip.style.left = (e.pageX + 12) + 'px';
+      tip.style.top = (e.pageY - 30) + 'px';
+    });
+    el.addEventListener('mouseleave', () => {
+      tip.classList.remove('show');
+    });
+  });
+  
+  // Click feedback
+  document.querySelectorAll('.alert, .risk-row, .obs-action, .risk-cta, .site-switcher, .class-row').forEach(el => {
+    el.addEventListener('click', () => {
+      el.style.transition = 'all 0.1s ease';
+      el.style.transform = (el.style.transform || '') + ' scale(0.99)';
+      setTimeout(() => {
+        el.style.transform = el.style.transform.replace(' scale(0.99)', '');
+      }, 120);
+    });
+  });
+  
+  // ============================================================
+  // TOUR INDICATORS
+  // ============================================================
+  (function() {
+    const TOUR_KEY = 'thirdspace-tour-state';
+    const initialState = localStorage.getItem(TOUR_KEY) || 'on';
+    if (initialState === 'off') document.body.classList.add('tour-off');
+    
+    document.querySelectorAll('[data-tour]').forEach(el => {
+      const computed = getComputedStyle(el);
+      if (computed.position === 'static') el.style.position = 'relative';
+      
+      const label = el.getAttribute('data-tour');
+      const pos = el.getAttribute('data-tour-pos') || 'tr';
+      
+      const pulse = document.createElement('div');
+      pulse.className = `tour-pulse ${pos}`;
+      
+      const labelEl = document.createElement('div');
+      labelEl.className = 'tour-pulse-label';
+      labelEl.innerHTML = label;
+      pulse.appendChild(labelEl);
+      
+      el.appendChild(pulse);
+    });
+    
+    const toggle = document.createElement('div');
+    toggle.className = 'tour-toggle';
+    toggle.innerHTML = `<div class="tour-toggle-dot"></div><span id="tour-toggle-text">Tour: on</span><span class="tour-toggle-key">T</span>`;
+    document.body.appendChild(toggle);
+    
+    function updateToggle() {
+      const isOff = document.body.classList.contains('tour-off');
+      const txt = document.getElementById('tour-toggle-text');
+      if (txt) txt.textContent = `Tour: ${isOff ? 'off' : 'on'}`;
+    }
+    updateToggle();
+    
+    function toggleTour() {
+      document.body.classList.toggle('tour-off');
+      localStorage.setItem(TOUR_KEY, document.body.classList.contains('tour-off') ? 'off' : 'on');
+      updateToggle();
+    }
+    
+    toggle.addEventListener('click', toggleTour);
+    document.addEventListener('keydown', (e) => {
+      if (e.key && e.key.toLowerCase() === 't') {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        toggleTour();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

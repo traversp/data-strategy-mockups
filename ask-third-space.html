@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask Third Space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0B0A08;
+    --bg-1: #131210;
+    --bg-2: #1A1816;
+    --bg-3: #221F1B;
+    --bg-input: #1F1C18;
+    --line: #2A2723;
+    --line-2: #3A352E;
+    --line-bright: #4A443B;
+    
+    --ink-1: #F4EFE3;
+    --ink-2: #C0B9A8;
+    --ink-3: #8A8576;
+    --ink-4: #5C574E;
+    
+    --bronze: #D4B274;
+    --bronze-2: #B89559;
+    --bronze-dim: #8E7B5C;
+    --bronze-faded: rgba(212, 178, 116, 0.08);
+    
+    --good: #7BC495;
+    --warn: #E0B26B;
+    --alert: #E08585;
+    --info: #8FB4D8;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg-deep); }
+  
+  body {
+    background: var(--bg-deep);
+    color: var(--ink-1);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    font-feature-settings: 'ss01' on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    
+    background-image:
+      radial-gradient(ellipse 1200px 600px at 50% -200px, rgba(212, 178, 116, 0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 800px 800px at 100% 100%, rgba(212, 178, 116, 0.02) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(244, 239, 227, 0.015) 1px, transparent 0);
+    background-size: 24px 24px;
+    z-index: 0;
+  }
+  
+  .num, [data-num] {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  
+  /* ============================================================
+     LAYOUT
+     ============================================================ */
+  .shell {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+  }
+  
+  /* ============================================================
+     SIDEBAR
+     ============================================================ */
+  .sidebar {
+    background: var(--bg-1);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .sidebar-head {
+    padding: 22px 22px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  
+  .wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.32em;
+    color: var(--ink-2);
+    text-transform: uppercase;
+  }
+  
+  .brand-sep {
+    width: 1px;
+    height: 12px;
+    background: var(--line-2);
+  }
+  
+  .product-mark {
+    font-size: 11px;
+    color: var(--bronze);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  .new-chat-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink-1);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .new-chat-btn:hover {
+    background: var(--bg-2);
+    border-color: var(--bronze-dim);
+  }
+  
+  .new-chat-btn svg { color: var(--bronze); }
+  
+  .sidebar-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 18px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-bright) transparent;
+  }
+  
+  .sidebar-body::-webkit-scrollbar { width: 4px; }
+  .sidebar-body::-webkit-scrollbar-thumb { background: var(--line-bright); border-radius: 2px; }
+  
+  .sidebar-section {
+    margin-bottom: 22px;
+  }
+  
+  .sidebar-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    padding: 0 8px 8px;
+  }
+  
+  .convo-item {
+    display: block;
+    padding: 8px 8px;
+    border-radius: 5px;
+    color: var(--ink-2);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    line-height: 1.4;
+    margin-bottom: 1px;
+  }
+  
+  .convo-item:hover {
+    background: var(--bg-2);
+    color: var(--ink-1);
+  }
+  
+  .convo-item.active {
+    background: var(--bg-2);
+    color: var(--ink-1);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+  }
+  
+  .convo-item.active::before {
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 14px;
+    background: var(--bronze);
+    margin-right: 8px;
+    vertical-align: middle;
+    margin-left: -8px;
+    border-radius: 1px;
+  }
+  
+  .saved-prompt {
+    display: block;
+    padding: 9px 10px;
+    margin-bottom: 4px;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--ink-2);
+    font-size: 11.5px;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  
+  .saved-prompt:hover {
+    background: var(--bg-2);
+    border-color: var(--bronze-dim);
+    color: var(--ink-1);
+  }
+  
+  .saved-prompt .prompt-eyebrow {
+    display: block;
+    font-size: 9px;
+    color: var(--bronze);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  
+  .sidebar-foot {
+    padding: 14px 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .gm-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bronze) 0%, var(--bronze-2) 100%);
+    color: #1A1816;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  
+  .gm-info { flex: 1; line-height: 1.2; min-width: 0; }
+  .gm-name { font-size: 12px; font-weight: 500; color: var(--ink-1); }
+  .gm-role {
+    font-size: 9.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  
+  .sidebar-foot svg {
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  
+  .sidebar-foot svg:hover { color: var(--ink-1); }
+  
+  /* ============================================================
+     MAIN CHAT
+     ============================================================ */
+  .main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .main-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(11, 10, 8, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 5;
+  }
+  
+  .head-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 8px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--ink-2);
+    font-size: 11.5px;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  
+  .back-link:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+    color: var(--ink-1);
+  }
+  
+  .back-link .arrow {
+    color: var(--bronze);
+    font-family: 'Geist Mono', monospace;
+  }
+  
+  .head-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-1);
+    letter-spacing: -0.005em;
+  }
+  
+  .head-meta {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding-left: 12px;
+    border-left: 1px solid var(--line);
+    margin-left: 4px;
+  }
+  
+  .head-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .head-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 11px 5px 9px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 10.5px;
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  
+  .head-pill .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--good);
+    box-shadow: 0 0 4px rgba(123, 196, 149, 0.5);
+  }
+  
+  .head-pill .label-mono {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+  }
+  
+  /* ============================================================
+     CONVERSATION
+     ============================================================ */
+  .conversation {
+    flex: 1;
+    overflow-y: auto;
+    padding: 40px 56px 200px;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line-bright) transparent;
+  }
+  
+  .conversation::-webkit-scrollbar { width: 6px; }
+  .conversation::-webkit-scrollbar-thumb { background: var(--line-bright); border-radius: 3px; }
+  
+  .conversation-inner {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  
+  /* USER TURN */
+  .turn-user {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .user-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+  
+  .user-eyebrow .who {
+    color: var(--bronze);
+  }
+  
+  .user-eyebrow .sep {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--ink-4);
+  }
+  
+  .user-eyebrow .time {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+  
+  .user-question {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-1);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  
+  /* AI TURN */
+  .turn-ai {
+    margin-bottom: 48px;
+  }
+  
+  .ai-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  
+  .ai-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px 4px 8px;
+    background: var(--bronze-faded);
+    border: 1px solid rgba(212, 178, 116, 0.2);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+  }
+  
+  .ai-mark::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  
+  .ai-time {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+  }
+  
+  .ai-body {
+    color: var(--ink-1);
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  
+  .ai-body p {
+    margin-bottom: 14px;
+  }
+  
+  .ai-body p:last-child { margin-bottom: 0; }
+  
+  .ai-body strong, .ai-body b {
+    color: var(--ink-1);
+    font-weight: 600;
+  }
+  
+  .ai-body .metric {
+    color: var(--bronze);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .ai-body .entity {
+    color: var(--bronze);
+    border-bottom: 1px dashed rgba(212, 178, 116, 0.3);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    padding-bottom: 1px;
+  }
+  
+  .ai-body .entity:hover {
+    color: var(--ink-1);
+    border-bottom-color: var(--bronze);
+    border-bottom-style: solid;
+  }
+  
+  .ai-body .cite {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--bronze);
+    background: var(--bronze-faded);
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-left: 2px;
+    vertical-align: super;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .ai-body .cite:hover {
+    background: var(--bronze);
+    color: var(--bg-deep);
+  }
+  
+  .ai-body h4 {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink-1);
+    margin: 24px 0 8px;
+    letter-spacing: -0.005em;
+  }
+  
+  /* Inline KPI strip */
+  .inline-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 18px 0;
+    box-shadow: 0 1px 0 rgba(255,240,220,0.04) inset;
+  }
+  
+  .inline-kpi {
+    background: var(--bg-1);
+    padding: 14px 16px;
+  }
+  
+  .inline-kpi-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+  
+  .inline-kpi-val {
+    font-family: 'Geist', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--ink-1);
+    line-height: 1.05;
+    margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.015em;
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  
+  .inline-kpi-val .currency { font-size: 14px; color: var(--ink-3); }
+  
+  .inline-kpi-delta {
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+  }
+  
+  .inline-kpi-delta.down { color: var(--alert); }
+  .inline-kpi-delta.up { color: var(--good); }
+  
+  /* Member list inline */
+  .member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0;
+  }
+  
+  .member-card {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  
+  .member-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    border-radius: 1px;
+    background: var(--alert);
+  }
+  
+  .member-card.med::before { background: var(--warn); }
+  
+  .member-card:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+    transform: translateX(2px);
+  }
+  
+  .m-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  
+  .m-info { min-width: 0; }
+  
+  .m-name {
+    font-size: 13.5px;
+    color: var(--ink-1);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  
+  .m-name .tier {
+    color: var(--ink-3);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-left: 4px;
+  }
+  
+  .m-reasoning {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    line-height: 1.45;
+  }
+  
+  .m-reasoning em {
+    color: var(--bronze);
+    font-style: normal;
+    font-weight: 500;
+  }
+  
+  .m-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  
+  .m-score {
+    font-family: 'Geist', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--alert);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  
+  .m-score.med { color: var(--warn); }
+  
+  .m-score-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+  }
+  
+  /* Cohort breakdown */
+  .cohort-chart {
+    margin: 18px 0;
+    padding: 16px 18px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  
+  .cohort-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  
+  .cohort-head b { color: var(--ink-1); font-weight: 500; }
+  
+  .cohort-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 60px;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+    font-size: 12px;
+  }
+  
+  .cohort-label { color: var(--ink-2); }
+  
+  .cohort-bar-track {
+    height: 8px;
+    background: var(--bg-3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .cohort-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bronze) 0%, var(--bronze-2) 100%);
+    border-radius: 4px;
+  }
+  
+  .cohort-bar-fill.dim {
+    background: var(--ink-4);
+  }
+  
+  .cohort-val {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-1);
+    text-align: right;
+    font-weight: 500;
+  }
+  
+  /* Definition alternatives table */
+  .def-alts {
+    margin: 16px 0;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .def-alt {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .def-alt:last-child { border-bottom: none; }
+  
+  .def-alt-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  
+  .def-alt-name {
+    font-size: 13px;
+    color: var(--ink-1);
+    font-weight: 600;
+  }
+  
+  .def-alt-name.canonical .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    padding: 2px 7px;
+    background: var(--bronze-faded);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--bronze);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  
+  .def-alt-owner {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-family: 'Geist Mono', monospace;
+  }
+  
+  .def-alt-desc {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  
+  .def-alt-formula {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    padding: 6px 10px;
+    background: var(--bg-deep);
+    border-radius: 4px;
+    margin-top: 6px;
+    display: inline-block;
+  }
+  
+  /* Sources block */
+  .sources-block {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  
+  .sources-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  
+  .sources-head .pill {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--bronze);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    padding: 2px 8px;
+    background: var(--bronze-faded);
+    border: 1px solid rgba(212, 178, 116, 0.15);
+    border-radius: 999px;
+  }
+  
+  .sources-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  
+  .source-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 11.5px;
+  }
+  
+  .source-num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--bronze);
+    font-weight: 600;
+    padding: 2px 5px;
+    background: var(--bronze-faded);
+    border-radius: 3px;
+    line-height: 1;
+  }
+  
+  .source-name {
+    color: var(--ink-1);
+    font-weight: 500;
+  }
+  
+  .source-name .sub {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-3);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+  
+  .source-fresh {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  
+  /* Suggested follow-ups */
+  .followups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  
+  .followup {
+    padding: 8px 14px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .followup:hover {
+    background: var(--bg-2);
+    border-color: var(--bronze-dim);
+    color: var(--ink-1);
+  }
+  
+  .followup::before {
+    content: '+';
+    color: var(--bronze);
+    font-weight: 500;
+    font-size: 13px;
+  }
+  
+  /* Confidence note */
+  .confidence-note {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--info);
+    border-radius: 4px;
+    font-size: 11.5px;
+    color: var(--ink-3);
+    line-height: 1.55;
+  }
+  
+  .confidence-note b {
+    color: var(--ink-2);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    margin-right: 6px;
+  }
+  
+  /* Thinking indicator */
+  .thinking {
+    margin-bottom: 48px;
+  }
+  
+  .thinking-body {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px 12px 14px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  
+  .thinking-dots {
+    display: inline-flex;
+    gap: 3px;
+  }
+  
+  .thinking-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--bronze);
+    opacity: 0.4;
+    animation: thinkPulse 1.4s infinite ease-in-out;
+  }
+  
+  .thinking-dot:nth-child(2) { animation-delay: 0.15s; }
+  .thinking-dot:nth-child(3) { animation-delay: 0.3s; }
+  
+  @keyframes thinkPulse {
+    0%, 60%, 100% { opacity: 0.3; transform: scale(0.85); }
+    30% { opacity: 1; transform: scale(1.1); }
+  }
+  
+  .thinking-action {
+    font-family: 'Geist Mono', monospace;
+    color: var(--ink-3);
+    font-size: 11px;
+  }
+  
+  .thinking-action b {
+    color: var(--bronze);
+    font-weight: 500;
+  }
+  
+  /* ============================================================
+     INPUT BAR
+     ============================================================ */
+  .input-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 56px 32px;
+    background: linear-gradient(180deg, transparent 0%, var(--bg-deep) 30%, var(--bg-deep) 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  .input-wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    pointer-events: auto;
+  }
+  
+  .input-box {
+    background: var(--bg-input);
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 4px;
+    box-shadow: 
+      0 1px 0 rgba(255,240,220,0.06) inset,
+      0 12px 40px rgba(0,0,0,0.4);
+    transition: border-color 0.15s;
+  }
+  
+  .input-box:focus-within {
+    border-color: var(--bronze-dim);
+    box-shadow: 
+      0 1px 0 rgba(255,240,220,0.06) inset,
+      0 12px 40px rgba(0,0,0,0.4),
+      0 0 0 3px rgba(212, 178, 116, 0.1);
+  }
+  
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+  
+  .input-field {
+    background: transparent;
+    border: none;
+    color: var(--ink-1);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: none;
+    min-height: 24px;
+    max-height: 120px;
+    width: 100%;
+  }
+  
+  .input-field:focus { outline: none; }
+  
+  .input-field::placeholder {
+    color: var(--ink-4);
+  }
+  
+  .input-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  
+  .input-icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-3);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .input-icon-btn:hover {
+    background: var(--bg-3);
+    color: var(--ink-1);
+  }
+  
+  .send-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--bronze);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1A1612;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .send-btn:hover {
+    background: var(--bronze-2);
+  }
+  
+  .input-foot {
+    padding: 0 14px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10.5px;
+    color: var(--ink-4);
+  }
+  
+  .input-context-pills {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  
+  .ctx-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    background: rgba(212, 178, 116, 0.05);
+    border: 1px solid rgba(212, 178, 116, 0.15);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--bronze);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  
+  .ctx-pill .x {
+    color: var(--ink-4);
+    cursor: pointer;
+    font-family: monospace;
+  }
+  
+  .input-disclaimer {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+  }
+  
+  .input-disclaimer b {
+    color: var(--ink-3);
+    font-weight: 500;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .sidebar, .main-head, .turn-user, .turn-ai, .thinking, .input-area {
+    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  
+  .turn-user:nth-of-type(1) { animation-delay: 0.05s; }
+  .turn-ai:nth-of-type(1) { animation-delay: 0.1s; }
+  .turn-user:nth-of-type(2) { animation-delay: 0.15s; }
+  .turn-ai:nth-of-type(2) { animation-delay: 0.2s; }
+  .turn-user:nth-of-type(3) { animation-delay: 0.25s; }
+  .turn-ai:nth-of-type(3) { animation-delay: 0.3s; }
+  
+  /* ============================================================
+     TOUR INDICATORS — pulse markers on clickable demo elements
+     ============================================================ */
+  .tour-pulse {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 0 2px rgba(11, 10, 8, 0.85), 0 0 12px var(--bronze);
+    z-index: 100;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tour-pulse::before, .tour-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+  }
+  .tour-pulse::before { animation: tourRing 2.4s ease-out infinite; }
+  .tour-pulse::after { animation: tourRing 2.4s ease-out infinite 1.2s; }
+  @keyframes tourRing {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(3.4); opacity: 0; }
+  }
+  .tour-pulse:hover { transform: scale(1.3); }
+  .tour-pulse-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1A1816;
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    color: var(--ink-1);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Geist', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    letter-spacing: 0.01em;
+  }
+  .tour-pulse-label .arrow {
+    color: var(--bronze);
+    font-family: 'Geist Mono', monospace;
+    margin: 0 4px 0 2px;
+  }
+  .tour-pulse:hover .tour-pulse-label { opacity: 1; }
+  .tour-pulse.tl { top: -6px; left: -6px; }
+  .tour-pulse.tl .tour-pulse-label { left: calc(100% + 12px); }
+  .tour-pulse.tl .tour-pulse-label::before { content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-right-color: #1A1816; }
+  .tour-pulse.tr { top: -6px; right: -6px; }
+  .tour-pulse.tr .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.tr .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  .tour-pulse.center-r { top: 50%; right: -6px; transform: translateY(-50%); }
+  .tour-pulse.center-r:hover { transform: translateY(-50%) scale(1.3); }
+  .tour-pulse.center-r .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.center-r .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  body.tour-off .tour-pulse { display: none; }
+  
+  .tour-toggle {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px 9px 11px;
+    background: rgba(26, 24, 22, 0.95);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--ink-1);
+    font-family: 'Geist', sans-serif;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    user-select: none;
+  }
+  .tour-toggle:hover { border-color: var(--bronze); transform: translateY(-1px); }
+  .tour-toggle-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  .tour-toggle-dot::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+    animation: tourRing 2.4s ease-out infinite;
+  }
+  body.tour-off .tour-toggle-dot { background: var(--ink-4); box-shadow: none; }
+  body.tour-off .tour-toggle-dot::after { display: none; }
+  body.tour-off .tour-toggle { color: var(--ink-3); border-color: rgba(255,255,255,0.08); }
+  .tour-toggle-key {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    padding: 1px 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 3px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="shell">
+  
+  <!-- ============================================================
+       SIDEBAR
+       ============================================================ -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-brand">
+        <div class="wordmark">Third Space</div>
+        <div class="brand-sep"></div>
+        <div class="product-mark">Ask</div>
+      </div>
+      <button class="new-chat-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        New conversation
+      </button>
+    </div>
+    
+    <div class="sidebar-body">
+      
+      <div class="sidebar-section">
+        <div class="sidebar-label">Today</div>
+        <a class="convo-item active">Tuesday morning briefing</a>
+      </div>
+      
+      <div class="sidebar-section">
+        <div class="sidebar-label">This week</div>
+        <a class="convo-item">Q4 PT package pacing</a>
+        <a class="convo-item">Class capacity — Tower Bridge</a>
+        <a class="convo-item">Founder churn cohort analysis</a>
+        <a class="convo-item">Marketing channel ROI · November</a>
+      </div>
+      
+      <div class="sidebar-section">
+        <div class="sidebar-label">Saved Prompts</div>
+        <div class="saved-prompt">
+          <span class="prompt-eyebrow">Weekly</span>
+          What's my busiest hour this week and how does it compare to typical?
+        </div>
+        <div class="saved-prompt">
+          <span class="prompt-eyebrow">Daily</span>
+          Members I should personally call today
+        </div>
+        <div class="saved-prompt">
+          <span class="prompt-eyebrow">Monthly</span>
+          Compare us to Tower Bridge and Mayfair
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <div class="sidebar-label">Earlier</div>
+        <a class="convo-item">New site demand · Notting Hill</a>
+        <a class="convo-item">Spa utilisation drivers</a>
+        <a class="convo-item">Marathon training cohort engagement</a>
+      </div>
+      
+    </div>
+    
+    <div class="sidebar-foot">
+      <div class="gm-avatar">JP</div>
+      <div class="gm-info">
+        <div class="gm-name">JP Singh</div>
+        <div class="gm-role">GM · Canary Wharf</div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </div>
+  </aside>
+  
+  <!-- ============================================================
+       MAIN
+       ============================================================ -->
+  <main class="main">
+    
+    <div class="main-head">
+      <div class="head-left">
+        <a href="gm-dashboard.html" class="back-link">
+          <span class="arrow">←</span>
+          Dashboard
+        </a>
+        <div class="head-title">Tuesday morning briefing.</div>
+        <div class="head-meta">Canary Wharf · 09:14</div>
+      </div>
+      
+      <div class="head-right">
+        <div class="head-pill">
+          <div class="dot"></div>
+          <span>Live</span>
+          <span class="label-mono">14 sources</span>
+        </div>
+        <div class="head-pill">
+          <span>Model</span>
+          <span class="label-mono">v2.4 · governed</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="conversation">
+      <div class="conversation-inner">
+        
+        <!-- ====================================================
+             TURN 1
+             ==================================================== -->
+        <div class="turn-user">
+          <div class="user-eyebrow">
+            <span class="who">You</span>
+            <div class="sep"></div>
+            <span class="time">09:14</span>
+          </div>
+          <div class="user-question">How is Canary Wharf doing this morning?</div>
+        </div>
+        
+        <div class="turn-ai">
+          <div class="ai-eyebrow">
+            <div class="ai-mark">Third Space</div>
+            <span class="ai-time">09:14 · answered in 2.1s</span>
+          </div>
+          
+          <div class="ai-body">
+            <p>You're broadly tracking last Tuesday, with two things worth your attention.</p>
+            
+            <div class="inline-kpis">
+              <div class="inline-kpi">
+                <div class="inline-kpi-label">Active Members</div>
+                <div class="inline-kpi-val num">1,247</div>
+                <div class="inline-kpi-delta down">↓ 53 vs target</div>
+              </div>
+              <div class="inline-kpi">
+                <div class="inline-kpi-label">MTD Revenue</div>
+                <div class="inline-kpi-val num"><span class="currency">£</span>338,142</div>
+                <div class="inline-kpi-delta down">↓ £17k vs forecast</div>
+              </div>
+              <div class="inline-kpi">
+                <div class="inline-kpi-label">In Club Now</div>
+                <div class="inline-kpi-val num">87</div>
+                <div class="inline-kpi-delta">Normal for 9am Tue</div>
+              </div>
+            </div>
+            
+            <p><a class="entity">Active Members</a><span class="cite">1</span> is at <span class="metric">1,247</span> — 53 under your November target of 1,300. The deficit is concentrated in <b>Founder tier</b>, which is 11 below plan; Premium and Core are tracking flat.</p>
+            
+            <p>MTD Revenue<span class="cite">2</span> sits at <span class="metric">£338,142</span>, around <span class="metric">£17k behind forecast</span>. The shortfall is almost entirely <b>PT package sales</b>, pacing 12% under. Membership revenue is on plan.</p>
+            
+            <h4>Two things worth your attention</h4>
+            
+            <p>
+              <b>23 members flagged at risk</b><span class="cite">3</span> by the churn model this week — 7 in Founder tier. The model has surfaced a cohort pattern worth acting on (more in your next question, if you want). <a class="entity" href="churn-console.html">Open the intervention queue →</a>
+            </p>
+            
+            <p>
+              <b>Reformer Pilates 18:30 is at 41% booked</b><span class="cite">4</span> — typically that slot is 85%+ on Tuesdays with Eva. Worth a comm to your weekday-evening regulars before midday if you'd like to recover bookings.
+            </p>
+            
+            <div class="sources-block">
+              <div class="sources-head">
+                Sources
+                <span class="pill">4 governed</span>
+              </div>
+              <div class="sources-list">
+                <div class="source-item">
+                  <div class="source-num">1</div>
+                  <div class="source-name">Active Members<span class="sub">Certified KPI · Membership domain</span></div>
+                  <div class="source-fresh">live</div>
+                </div>
+                <div class="source-item">
+                  <div class="source-num">2</div>
+                  <div class="source-name">MTD Revenue<span class="sub">Certified KPI · Finance domain</span></div>
+                  <div class="source-fresh">6 min</div>
+                </div>
+                <div class="source-item">
+                  <div class="source-num">3</div>
+                  <div class="source-name">Churn risk model<span class="sub">v2.4 · gradient boosted · AUC 0.84</span></div>
+                  <div class="source-fresh">live</div>
+                </div>
+                <div class="source-item">
+                  <div class="source-num">4</div>
+                  <div class="source-name">Class bookings<span class="sub">Platform DB · Programming domain</span></div>
+                  <div class="source-fresh">live</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ====================================================
+             TURN 2
+             ==================================================== -->
+        <div class="turn-user">
+          <div class="user-eyebrow">
+            <span class="who">You</span>
+            <div class="sep"></div>
+            <span class="time">09:15</span>
+          </div>
+          <div class="user-question">Why has Founder churn risk gone up this quarter?</div>
+        </div>
+        
+        <div class="turn-ai">
+          <div class="ai-eyebrow">
+            <div class="ai-mark">Third Space</div>
+            <span class="ai-time">09:15 · answered in 4.7s</span>
+          </div>
+          
+          <div class="ai-body">
+            <p>Two patterns are driving it.</p>
+            
+            <h4>Cohort effect — joining year</h4>
+            
+            <p><b>Members who joined in 2021–2022</b> are 4× over-represented in this quarter's at-risk pool relative to their share of the active base.</p>
+            
+            <div class="cohort-chart">
+              <div class="cohort-head">
+                <span>Share of at-risk Founder members by joining year</span>
+                <b>n = 11 of 23</b>
+              </div>
+              <div class="cohort-row">
+                <div class="cohort-label">2019–2020</div>
+                <div class="cohort-bar-track"><div class="cohort-bar-fill dim" style="width: 18%"></div></div>
+                <div class="cohort-val">9%</div>
+              </div>
+              <div class="cohort-row">
+                <div class="cohort-label">2021–2022</div>
+                <div class="cohort-bar-track"><div class="cohort-bar-fill" style="width: 88%"></div></div>
+                <div class="cohort-val">48%</div>
+              </div>
+              <div class="cohort-row">
+                <div class="cohort-label">2023</div>
+                <div class="cohort-bar-track"><div class="cohort-bar-fill dim" style="width: 42%"></div></div>
+                <div class="cohort-val">22%</div>
+              </div>
+              <div class="cohort-row">
+                <div class="cohort-label">2024</div>
+                <div class="cohort-bar-track"><div class="cohort-bar-fill dim" style="width: 38%"></div></div>
+                <div class="cohort-val">21%</div>
+              </div>
+            </div>
+            
+            <h4>Behavioural signal — strength training drop-off</h4>
+            
+            <p>The dominant feature in the model<span class="cite">5</span> is <b>strength training reduction</b>. These members have cut their lift sessions by <span class="metric">60%+</span> over the last 6 weeks. App engagement<span class="cite">6</span> has fallen with it — opens down to 2/week from 11/week.</p>
+            
+            <p>The historical recovery rate for <b>personalised PT outreach against this exact cohort pattern</b> is <span class="metric">41% within 90 days</span><span class="cite">7</span>, based on 142 logged cases over the last 18 months. That's the highest-impact intervention I've measured for this signal.</p>
+            
+            <div class="confidence-note">
+              <b>Confidence</b>The cohort effect is well-evidenced (chi-squared p < 0.01). The 41% recovery estimate has a wider band — 33–48% — given the cohort sample size.
+            </div>
+            
+            <div class="followups">
+              <div class="followup">Who are the 11?</div>
+              <div class="followup">Draft outreach campaign brief</div>
+              <div class="followup">Compare to Tower Bridge cohort</div>
+            </div>
+            
+            <div class="sources-block">
+              <div class="sources-head">
+                Sources
+                <span class="pill">3 governed</span>
+              </div>
+              <div class="sources-list">
+                <div class="source-item">
+                  <div class="source-num">5</div>
+                  <div class="source-name">Churn risk model<span class="sub">SHAP attribution · feature importance</span></div>
+                  <div class="source-fresh">live</div>
+                </div>
+                <div class="source-item">
+                  <div class="source-num">6</div>
+                  <div class="source-name">App engagement<span class="sub">Member 360 · Digital domain</span></div>
+                  <div class="source-fresh">live</div>
+                </div>
+                <div class="source-item">
+                  <div class="source-num">7</div>
+                  <div class="source-name">Intervention outcomes log<span class="sub">142 cases · last 18 months</span></div>
+                  <div class="source-fresh">yesterday</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ====================================================
+             TURN 3
+             ==================================================== -->
+        <div class="turn-user">
+          <div class="user-eyebrow">
+            <span class="who">You</span>
+            <div class="sep"></div>
+            <span class="time">09:16</span>
+          </div>
+          <div class="user-question">Which 5 members should I prioritise calling today?</div>
+        </div>
+        
+        <div class="turn-ai">
+          <div class="ai-eyebrow">
+            <div class="ai-mark">Third Space</div>
+            <span class="ai-time">09:16 · answered in 3.4s</span>
+          </div>
+          
+          <div class="ai-body">
+            <p>Ranked by <b>predicted recovery probability</b> if contacted today, weighted by lifetime value. None of these have been contacted in the last 14 days.</p>
+            
+            <div class="member-list">
+              <a href="churn-console.html?member=sarah-jones" class="member-card" data-tour="<span class='arrow'>→</span>Console: Sarah" data-tour-pos="center-r">
+                <div class="m-avatar">SJ</div>
+                <div class="m-info">
+                  <div class="m-name">Sarah Jones <span class="tier">· Founder</span></div>
+                  <div class="m-reasoning">Marathon programme · personal call <em>+ PT outreach</em> · est. recovery 43%</div>
+                </div>
+                <div class="m-right">
+                  <div class="m-score">73%</div>
+                  <div class="m-score-label">30d risk</div>
+                </div>
+              </a>
+              <a href="churn-console.html?member=james-mitchell" class="member-card" data-tour="<span class='arrow'>→</span>Console: James" data-tour-pos="center-r">
+                <div class="m-avatar">JM</div>
+                <div class="m-info">
+                  <div class="m-name">James Mitchell <span class="tier">· Premium</span></div>
+                  <div class="m-reasoning">PT lapsed · best fit for <em>reactivation offer</em> · est. recovery 38%</div>
+                </div>
+                <div class="m-right">
+                  <div class="m-score">68%</div>
+                  <div class="m-score-label">30d risk</div>
+                </div>
+              </a>
+              <a href="churn-console.html?member=aisha-patel" class="member-card" data-tour="<span class='arrow'>→</span>Console: Aisha" data-tour-pos="center-r">
+                <div class="m-avatar">AP</div>
+                <div class="m-info">
+                  <div class="m-name">Aisha Patel <span class="tier">· Founder</span></div>
+                  <div class="m-reasoning">Submitted Detractor NPS · <em>personal call</em> · est. recovery 39%</div>
+                </div>
+                <div class="m-right">
+                  <div class="m-score">64%</div>
+                  <div class="m-score-label">30d risk</div>
+                </div>
+              </a>
+              <a href="churn-console.html?member=tom-williamson" class="member-card med" data-tour="<span class='arrow'>→</span>Console: Tom" data-tour-pos="center-r">
+                <div class="m-avatar">TW</div>
+                <div class="m-info">
+                  <div class="m-name">Tom Williamson <span class="tier">· Core</span></div>
+                  <div class="m-reasoning">DD failed twice · billing-first <em>not retention call</em> · est. recovery 31%</div>
+                </div>
+                <div class="m-right">
+                  <div class="m-score med">58%</div>
+                  <div class="m-score-label">30d risk</div>
+                </div>
+              </a>
+              <a href="churn-console.html?member=lina-bauer" class="member-card med" data-tour="<span class='arrow'>→</span>Console: Lina" data-tour-pos="center-r">
+                <div class="m-avatar">LB</div>
+                <div class="m-info">
+                  <div class="m-name">Lina Bauer <span class="tier">· Premium</span></div>
+                  <div class="m-reasoning">Booking-pattern issue · <em>programming intervention</em> · est. recovery 34%</div>
+                </div>
+                <div class="m-right">
+                  <div class="m-score med">54%</div>
+                  <div class="m-score-label">30d risk</div>
+                </div>
+              </a>
+            </div>
+            
+            <p>Three of the five are <b>Founder tier</b>. Tom's case is a billing matter dressed as churn — handle through finance first, not retention. The others all benefit from a 15-minute personal call within the next 48 hours.</p>
+            
+            <p><a class="entity" href="churn-console.html">Open the intervention console →</a> to log actions and outcomes against these.</p>
+            
+            <div class="followups">
+              <div class="followup">Draft talking points for Sarah</div>
+              <div class="followup">Why isn't Ravi Mehta on this list?</div>
+              <div class="followup">Use a different at-risk definition</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ====================================================
+             TURN 4 — the governance demo killer
+             ==================================================== -->
+        <div class="turn-user">
+          <div class="user-eyebrow">
+            <span class="who">You</span>
+            <div class="sep"></div>
+            <span class="time">09:18</span>
+          </div>
+          <div class="user-question">Use a different at-risk definition — what are the options?</div>
+        </div>
+        
+        <div class="turn-ai">
+          <div class="ai-eyebrow">
+            <div class="ai-mark">Third Space</div>
+            <span class="ai-time">09:18 · answered in 1.6s</span>
+          </div>
+          
+          <div class="ai-body">
+            <p>I'm using the <b>certified definition</b> from the data glossary. There are two alternatives in active use elsewhere in the business.</p>
+            
+            <div class="def-alts">
+              
+              <div class="def-alt">
+                <div class="def-alt-head">
+                  <div class="def-alt-name canonical">
+                    At Risk
+                    <span class="badge">Certified</span>
+                  </div>
+                  <div class="def-alt-owner">Owner · Head of Membership</div>
+                </div>
+                <div class="def-alt-desc">Predicted probability of cancellation in next 30 days, from the churn model.</div>
+                <div class="def-alt-formula">P(churn₃₀ₐ) ≥ 0.30 from model v2.4</div>
+              </div>
+              
+              <div class="def-alt">
+                <div class="def-alt-head">
+                  <div class="def-alt-name">Disengaged</div>
+                  <div class="def-alt-owner">Owner · Head of Marketing</div>
+                </div>
+                <div class="def-alt-desc">Used to seed re-engagement email campaigns. Backward-looking and behavioural, no model.</div>
+                <div class="def-alt-formula">days_since_visit ≥ 14 AND visits_mom_pct ≤ −50%</div>
+              </div>
+              
+              <div class="def-alt">
+                <div class="def-alt-head">
+                  <div class="def-alt-name">Lapsed</div>
+                  <div class="def-alt-owner">Owner · Finance</div>
+                </div>
+                <div class="def-alt-desc">Used in DD audit and revenue forecasting. Looser, longer window.</div>
+                <div class="def-alt-formula">days_since_visit ≥ 30</div>
+              </div>
+              
+            </div>
+            
+            <p>If you'd like me to re-run the call list against one of those, I can — but a few caveats first.</p>
+            
+            <p><b>Recovery rate estimates</b> are calibrated against the certified definition. They'll be less reliable if applied to <i>Disengaged</i> or <i>Lapsed</i> members.</p>
+            
+            <p><b>LTV-weighted ranking</b> works for any of the three definitions.</p>
+            
+            <div class="confidence-note">
+              <b>Governance</b>Definitions are managed in the Data Glossary (Purview). Changes require domain-owner approval. If you think there should be a fourth definition for a workflow you're running, you can propose it from the glossary entry.
+            </div>
+            
+            <div class="followups">
+              <div class="followup">Re-run using Disengaged</div>
+              <div class="followup">Compare overlap between the three</div>
+              <div class="followup">Show me the glossary entry</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ====================================================
+             THINKING — current question in progress
+             ==================================================== -->
+        <div class="thinking">
+          <div class="thinking-body">
+            <div class="thinking-dots">
+              <div class="thinking-dot"></div>
+              <div class="thinking-dot"></div>
+              <div class="thinking-dot"></div>
+            </div>
+            <span>Researching</span>
+            <span class="thinking-action">— reading <b>Member 360</b>, <b>Churn model</b>, <b>Marketing CRM</b></span>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    
+    <!-- ============================================================
+         INPUT
+         ============================================================ -->
+    <div class="input-area">
+      <div class="input-wrap">
+        <div class="input-box">
+          <div class="input-row">
+            <textarea class="input-field" rows="1" placeholder="Ask anything about Canary Wharf — KPIs, members, classes, finance, comparisons…">Compare overlap between the three at-risk definitions</textarea>
+            <div class="input-actions">
+              <button class="input-icon-btn" title="Attach">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.8l-8.58 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                </svg>
+              </button>
+              <button class="input-icon-btn" title="Voice">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="2" width="6" height="12" rx="3"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/>
+                </svg>
+              </button>
+              <button class="send-btn" title="Send">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="input-foot">
+            <div class="input-context-pills">
+              <div class="ctx-pill">Canary Wharf <span class="x">×</span></div>
+              <div class="ctx-pill">November 2024 <span class="x">×</span></div>
+            </div>
+            <div class="input-disclaimer">
+              Answers use governed data only · <b>v2.4</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </main>
+  
+</div>
+
+<script>
+  // Sample interactive moments — saved prompts and follow-ups feel clickable
+  document.querySelectorAll('.followup, .saved-prompt, .convo-item, .new-chat-btn').forEach(el => {
+    el.addEventListener('click', () => {
+      el.style.transition = 'all 0.1s ease';
+      el.style.transform = 'scale(0.98)';
+      setTimeout(() => { el.style.transform = ''; }, 120);
+    });
+  });
+  
+  // Citation hover feels tactile
+  document.querySelectorAll('.cite').forEach(c => {
+    c.addEventListener('click', (e) => {
+      e.preventDefault();
+      const sourceItem = document.querySelectorAll('.source-num')[parseInt(c.textContent) - 1];
+      if (sourceItem) {
+        const item = sourceItem.closest('.source-item');
+        item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        item.style.borderColor = 'var(--bronze)';
+        setTimeout(() => { item.style.borderColor = ''; }, 1500);
+      }
+    });
+  });
+  
+  // Auto-scroll to bottom of conversation
+  const conv = document.querySelector('.conversation');
+  if (conv) conv.scrollTop = conv.scrollHeight;
+
+  // ============================================================
+  // TOUR INDICATORS
+  // ============================================================
+  (function() {
+    const TOUR_KEY = 'thirdspace-tour-state';
+    const initialState = localStorage.getItem(TOUR_KEY) || 'on';
+    if (initialState === 'off') document.body.classList.add('tour-off');
+    
+    document.querySelectorAll('[data-tour]').forEach(el => {
+      const computed = getComputedStyle(el);
+      if (computed.position === 'static') el.style.position = 'relative';
+      
+      const label = el.getAttribute('data-tour');
+      const pos = el.getAttribute('data-tour-pos') || 'tr';
+      
+      const pulse = document.createElement('div');
+      pulse.className = 'tour-pulse ' + pos;
+      
+      const labelEl = document.createElement('div');
+      labelEl.className = 'tour-pulse-label';
+      labelEl.innerHTML = label;
+      pulse.appendChild(labelEl);
+      
+      el.appendChild(pulse);
+    });
+    
+    const toggle = document.createElement('div');
+    toggle.className = 'tour-toggle';
+    toggle.innerHTML = '<div class="tour-toggle-dot"></div><span id="tour-toggle-text">Tour: on</span><span class="tour-toggle-key">T</span>';
+    document.body.appendChild(toggle);
+    
+    function updateToggle() {
+      const isOff = document.body.classList.contains('tour-off');
+      const txt = document.getElementById('tour-toggle-text');
+      if (txt) txt.textContent = 'Tour: ' + (isOff ? 'off' : 'on');
+    }
+    updateToggle();
+    
+    function toggleTour() {
+      document.body.classList.toggle('tour-off');
+      localStorage.setItem(TOUR_KEY, document.body.classList.contains('tour-off') ? 'off' : 'on');
+      updateToggle();
+    }
+    
+    toggle.addEventListener('click', toggleTour);
+    document.addEventListener('keydown', (e) => {
+      if (e.key && e.key.toLowerCase() === 't') {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        toggleTour();
+      }
+    });
+  })();
+
+</script>
+
+</body>
+</html>

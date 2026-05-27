@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Third Space · Member App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0B0A08;
+    --bg-1: #131210;
+    --bg-2: #1A1816;
+    --bg-3: #221F1B;
+    --line: #2A2723;
+    --line-2: #3A352E;
+    --line-bright: #4A443B;
+    
+    --ink-1: #F4EFE3;
+    --ink-2: #C0B9A8;
+    --ink-3: #8A8576;
+    --ink-4: #5C574E;
+    
+    --bronze: #D4B274;
+    --bronze-2: #B89559;
+    --bronze-dim: #8E7B5C;
+    --bronze-faded: rgba(212, 178, 116, 0.1);
+    
+    --good: #7BC495;
+    --warn: #E0B26B;
+    --alert: #E08585;
+    
+    /* Warm photographic gradients for "imagery" zones */
+    --photo-run: linear-gradient(135deg, #4A2F1E 0%, #2A1810 50%, #1A0E08 100%);
+    --photo-yoga: linear-gradient(135deg, #4A3A3D 0%, #2D2226 60%, #1A1416 100%);
+    --photo-hiit: linear-gradient(135deg, #3D2F1A 0%, #2A1F12 60%, #15100A 100%);
+    --photo-pt: linear-gradient(135deg, #3D352B 0%, #28221C 60%, #15110E 100%);
+    --photo-spa: linear-gradient(135deg, #2D3A35 0%, #1F2A26 60%, #131A18 100%);
+    --photo-box: linear-gradient(135deg, #3D1F1F 0%, #2A1414 60%, #160A0A 100%);
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html { background: var(--bg-deep); }
+  
+  body {
+    background: var(--bg-deep);
+    color: var(--ink-1);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    font-feature-settings: 'ss01' on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    
+    background-image:
+      radial-gradient(ellipse 1400px 800px at 50% -200px, rgba(212, 178, 116, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 1000px 1000px at 100% 100%, rgba(212, 178, 116, 0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 800px 600px at 0% 50%, rgba(212, 178, 116, 0.025) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(244, 239, 227, 0.015) 1px, transparent 0);
+    background-size: 28px 28px;
+    z-index: 0;
+  }
+  
+  .num, [data-num] {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  
+  /* ============================================================
+     PAGE COMPOSITION
+     ============================================================ */
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 460px 1fr;
+    gap: 40px;
+    padding: 40px 48px;
+    align-items: start;
+  }
+  
+  /* Left context column */
+  .context-left {
+    text-align: right;
+    padding-top: 60px;
+  }
+  
+  .demo-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 16px;
+  }
+  
+  .demo-title {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.1;
+    color: var(--ink-1);
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  
+  .demo-title em {
+    font-style: italic;
+    color: var(--bronze);
+  }
+  
+  .demo-lede {
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  
+  .demo-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--ink-2);
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  
+  .demo-cta:hover {
+    background: var(--bg-2);
+    border-color: var(--line-bright);
+    color: var(--ink-1);
+  }
+  
+  .demo-cta .arrow {
+    color: var(--bronze);
+    font-family: 'Geist Mono', monospace;
+    transition: transform 0.15s;
+  }
+  
+  .demo-cta:hover .arrow { transform: translateX(-2px); }
+  
+  /* Right annotations column */
+  .context-right {
+    padding-top: 60px;
+  }
+  
+  .annotation {
+    margin-bottom: 28px;
+    padding-left: 18px;
+    border-left: 1px solid var(--line);
+    position: relative;
+  }
+  
+  .annotation::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 8px rgba(212, 178, 116, 0.4);
+  }
+  
+  .annot-eyebrow {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 6px;
+  }
+  
+  .annot-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink-1);
+    margin-bottom: 6px;
+    letter-spacing: -0.005em;
+  }
+  
+  .annot-text {
+    font-size: 12.5px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+  
+  .annot-text b {
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  
+  /* ============================================================
+     PHONE FRAME
+     ============================================================ */
+  .phone-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+  
+  .phone-shadow-glow {
+    position: absolute;
+    inset: -100px;
+    background: radial-gradient(ellipse at 50% 50%, rgba(212, 178, 116, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .phone {
+    position: relative;
+    width: 400px;
+    height: 820px;
+    background: linear-gradient(135deg, #2A2622 0%, #1A1716 50%, #14110E 100%);
+    border-radius: 52px;
+    padding: 14px;
+    box-shadow:
+      0 0 0 1px rgba(255, 240, 220, 0.08),
+      0 1px 0 rgba(255, 240, 220, 0.12) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.5) inset,
+      0 40px 80px rgba(0, 0, 0, 0.5),
+      0 20px 40px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  
+  /* Side buttons */
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 140px;
+    right: -2px;
+    width: 3px;
+    height: 80px;
+    background: #1A1716;
+    border-radius: 0 2px 2px 0;
+    box-shadow: 0 -1px 0 rgba(255,255,255,0.04);
+  }
+  
+  .phone::after {
+    content: '';
+    position: absolute;
+    top: 110px;
+    left: -2px;
+    width: 3px;
+    height: 30px;
+    background: #1A1716;
+    border-radius: 2px 0 0 2px;
+  }
+  
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-deep);
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    
+    background-image:
+      radial-gradient(ellipse 600px 300px at 50% -100px, rgba(212, 178, 116, 0.06) 0%, transparent 60%);
+  }
+  
+  /* Dynamic island */
+  .island {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 116px;
+    height: 32px;
+    background: #000;
+    border-radius: 999px;
+    z-index: 10;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+  }
+  
+  /* Status bar */
+  .status-bar {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-1);
+    letter-spacing: -0.005em;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .status-icons svg { display: block; }
+  
+  /* Scrollable content area */
+  .scroll {
+    height: calc(100% - 100px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 24px;
+  }
+  
+  .scroll::-webkit-scrollbar { display: none; }
+  
+  /* ============================================================
+     APP CHROME — top bar
+     ============================================================ */
+  .app-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px 8px;
+  }
+  
+  .app-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  
+  .app-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .icon-btn:hover {
+    background: var(--bg-3);
+    color: var(--ink-1);
+  }
+  
+  .icon-btn.has-dot::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  
+  .icon-btn { position: relative; }
+  
+  /* ============================================================
+     GREETING
+     ============================================================ */
+  .greeting {
+    padding: 22px 24px 24px;
+  }
+  
+  .greet-time {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .greet-headline {
+    font-family: 'Fraunces', serif;
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.05;
+    color: var(--ink-1);
+    letter-spacing: -0.025em;
+    margin-bottom: 12px;
+  }
+  
+  .greet-headline em {
+    font-style: italic;
+    color: var(--bronze);
+  }
+  
+  .greet-context {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+  
+  .greet-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--bronze-faded);
+    border: 1px solid rgba(212, 178, 116, 0.2);
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--bronze);
+    letter-spacing: 0.04em;
+  }
+  
+  .greet-pill .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--bronze);
+  }
+  
+  /* ============================================================
+     SECTION HEADERS
+     ============================================================ */
+  .section {
+    padding: 0 24px;
+    margin-bottom: 28px;
+  }
+  
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  
+  .section-title {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  
+  .section-action {
+    font-size: 11.5px;
+    color: var(--bronze);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  /* ============================================================
+     TODAY'S SESSION — hero card
+     ============================================================ */
+  .hero-card {
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 
+      0 1px 0 rgba(255, 240, 220, 0.06) inset,
+      0 12px 24px rgba(0,0,0,0.4);
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .hero-card:active { transform: scale(0.985); }
+  
+  .hero-image {
+    aspect-ratio: 16 / 11;
+    background: var(--photo-run);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.5) 100%);
+  }
+  
+  /* Subtle decorative pattern */
+  .hero-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 30% 40%, rgba(255, 200, 130, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.3) 0%, transparent 40%);
+  }
+  
+  .hero-decor {
+    position: absolute;
+    bottom: 14px;
+    right: 18px;
+    z-index: 1;
+  }
+  
+  .hero-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    padding: 5px 11px;
+    background: rgba(11, 10, 8, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .hero-badge .pulse {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  
+  .hero-body {
+    padding: 18px 20px 20px;
+    background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  
+  .hero-eyebrow {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 8px;
+  }
+  
+  .hero-name {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--ink-1);
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+  
+  .hero-meta {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+  
+  .hero-slots {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .slot {
+    padding: 7px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink-1);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-variant-numeric: tabular-nums;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .slot:hover {
+    background: var(--bronze-faded);
+    border-color: var(--bronze-dim);
+  }
+  
+  .slot.primary {
+    background: var(--bronze);
+    border-color: var(--bronze);
+    color: #1A1612;
+    font-weight: 600;
+  }
+  
+  .slot.primary:hover {
+    background: var(--bronze-2);
+  }
+  
+  .slot-more {
+    color: var(--ink-3);
+    font-size: 11px;
+    padding: 7px 4px;
+  }
+  
+  /* ============================================================
+     RECOMMENDED CLASSES — horizontal scroll
+     ============================================================ */
+  .rec-scroll {
+    margin: 0 -24px;
+    padding: 0 24px 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .rec-scroll::-webkit-scrollbar { display: none; }
+  
+  .rec-row {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+  }
+  
+  .rec-card {
+    width: 220px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 1px 0 rgba(255,240,220,0.04) inset;
+  }
+  
+  .rec-card:hover {
+    border-color: var(--line-bright);
+    transform: translateY(-2px);
+  }
+  
+  .rec-card.featured {
+    border-color: rgba(212, 178, 116, 0.3);
+    background: linear-gradient(180deg, rgba(212, 178, 116, 0.05) 0%, var(--bg-1) 100%);
+  }
+  
+  .rec-image {
+    aspect-ratio: 16 / 9;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .rec-image.yoga { background: var(--photo-yoga); }
+  .rec-image.hiit { background: var(--photo-hiit); }
+  .rec-image.box { background: var(--photo-box); }
+  .rec-image.spa { background: var(--photo-spa); }
+  
+  .rec-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4) 100%);
+  }
+  
+  .rec-image-decor {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    z-index: 1;
+    opacity: 0.7;
+  }
+  
+  .rec-tag-row {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: flex;
+    gap: 6px;
+  }
+  
+  .rec-tag {
+    padding: 3px 8px;
+    background: rgba(11, 10, 8, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+  }
+  
+  .rec-tag.std {
+    border-color: var(--line);
+    color: var(--ink-2);
+  }
+  
+  .rec-body {
+    padding: 12px 14px 14px;
+  }
+  
+  .rec-time {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--bronze);
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  
+  .rec-name {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink-1);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+  }
+  
+  .rec-instructor {
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+  }
+  
+  .rec-why {
+    font-size: 11px;
+    color: var(--ink-2);
+    line-height: 1.45;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .rec-why .why-icon {
+    width: 12px;
+    height: 12px;
+    margin-top: 1px;
+    flex-shrink: 0;
+    color: var(--bronze);
+  }
+  
+  .rec-why em {
+    color: var(--bronze);
+    font-style: normal;
+    font-weight: 500;
+  }
+  
+  /* ============================================================
+     PT CARD
+     ============================================================ */
+  .pt-card {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 14px;
+    padding: 16px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .pt-card:hover {
+    border-color: var(--line-bright);
+    background: var(--bg-2);
+  }
+  
+  .pt-photo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--photo-pt);
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .pt-photo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 50% 38%, rgba(212, 178, 116, 0.25) 0%, transparent 35%),
+      radial-gradient(circle at 50% 75%, rgba(212, 178, 116, 0.15) 0%, transparent 40%);
+  }
+  
+  .pt-photo-initial {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--ink-1);
+    z-index: 1;
+  }
+  
+  .pt-online {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--good);
+    border: 2px solid var(--bg-1);
+    box-shadow: 0 0 6px rgba(123, 196, 149, 0.5);
+  }
+  
+  .pt-info {
+    min-width: 0;
+  }
+  
+  .pt-eyebrow {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 5px;
+  }
+  
+  .pt-name {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--ink-1);
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  
+  .pt-next {
+    font-size: 11.5px;
+    color: var(--ink-2);
+    margin-bottom: 4px;
+  }
+  
+  .pt-next b { color: var(--ink-1); font-weight: 500; }
+  
+  .pt-prog {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* ============================================================
+     PROGRAMME PROGRESS
+     ============================================================ */
+  .programme {
+    background: 
+      radial-gradient(ellipse at top right, rgba(212, 178, 116, 0.06) 0%, transparent 50%),
+      var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-top: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .programme-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+  }
+  
+  .programme-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-1);
+    letter-spacing: -0.005em;
+  }
+  
+  .programme-week {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--bronze);
+    font-weight: 500;
+  }
+  
+  .programme-bar {
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  
+  .programme-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bronze) 0%, var(--bronze-2) 100%);
+    width: 57%;
+    box-shadow: 0 0 8px rgba(212, 178, 116, 0.4);
+  }
+  
+  .programme-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .programme-meta b { color: var(--ink-2); font-weight: 500; }
+  
+  .programme-this-week {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  
+  .programme-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  
+  .pday {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 0;
+    border-radius: 8px;
+    font-size: 9.5px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  
+  .pday-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+  }
+  
+  .pday.done .pday-dot {
+    background: var(--good);
+    border-color: var(--good);
+  }
+  
+  .pday.today .pday-dot {
+    background: var(--bronze-faded);
+    border: 1px solid var(--bronze);
+    color: var(--bronze);
+    font-weight: 700;
+    font-size: 10px;
+  }
+  
+  .pday.done {
+    color: var(--ink-2);
+  }
+  
+  .pday.today {
+    color: var(--bronze);
+  }
+  
+  .pday-num {
+    font-family: 'Geist Mono', monospace;
+  }
+  
+  /* ============================================================
+     RECOVERY ROW
+     ============================================================ */
+  .recovery-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 10px;
+  }
+  
+  .rec-tile {
+    border-radius: 14px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s;
+    background: var(--photo-spa);
+  }
+  
+  .rec-tile:hover { transform: translateY(-2px); }
+  
+  .rec-tile.tall {
+    grid-row: span 2;
+    aspect-ratio: auto;
+  }
+  
+  .rec-tile.stretch { background: var(--photo-yoga); }
+  
+  .rec-tile-content {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.7) 100%);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  
+  .rec-tile-eyebrow {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 4px;
+  }
+  
+  .rec-tile-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--ink-1);
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  
+  .rec-tile-meta {
+    font-size: 10.5px;
+    color: var(--ink-2);
+    margin-top: 4px;
+  }
+  
+  /* ============================================================
+     FOUNDER PERKS — full bleed dark card
+     ============================================================ */
+  .founder {
+    margin: 0 24px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #1F1A12 0%, #15110A 100%);
+    border: 1px solid rgba(212, 178, 116, 0.18);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .founder::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze) 50%, transparent 100%);
+    opacity: 0.5;
+  }
+  
+  .founder-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .founder-tag {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--bronze);
+  }
+  
+  .founder-title {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink-1);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  
+  .founder-title em {
+    font-style: italic;
+    color: var(--bronze);
+  }
+  
+  .founder-desc {
+    font-size: 11.5px;
+    color: var(--ink-3);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  
+  .founder-perks {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .perk {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(11, 10, 8, 0.4);
+    border: 1px solid rgba(212, 178, 116, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  
+  .perk:hover {
+    background: rgba(11, 10, 8, 0.7);
+    border-color: rgba(212, 178, 116, 0.2);
+  }
+  
+  .perk-icon {
+    width: 22px;
+    height: 22px;
+    color: var(--bronze);
+    flex-shrink: 0;
+  }
+  
+  .perk-text {
+    flex: 1;
+    font-size: 11.5px;
+    color: var(--ink-2);
+    line-height: 1.4;
+  }
+  
+  .perk-text b {
+    color: var(--ink-1);
+    font-weight: 500;
+  }
+  
+  .perk-arrow {
+    color: var(--bronze);
+    font-family: 'Geist Mono', monospace;
+    font-size: 13px;
+  }
+  
+  /* ============================================================
+     BOTTOM TAB BAR
+     ============================================================ */
+  .tab-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(180deg, transparent 0%, var(--bg-deep) 40%, var(--bg-deep) 100%);
+    z-index: 20;
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 16px 0;
+  }
+  
+  .tabs {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background: rgba(26, 24, 22, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 8px 6px;
+    box-shadow: 
+      0 1px 0 rgba(255,240,220,0.08) inset,
+      0 8px 24px rgba(0,0,0,0.4);
+  }
+  
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 4px;
+    cursor: pointer;
+    color: var(--ink-4);
+    transition: color 0.15s;
+    text-align: center;
+  }
+  
+  .tab:hover { color: var(--ink-2); }
+  .tab.active { color: var(--bronze); }
+  
+  .tab-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .tab-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  
+  /* Home indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 4px;
+    background: var(--ink-1);
+    border-radius: 2px;
+    opacity: 0.9;
+    z-index: 25;
+  }
+  
+  /* ============================================================
+     SCROLL HINT
+     ============================================================ */
+  .scroll-hint {
+    text-align: center;
+    padding: 8px 24px 12px;
+    font-size: 10.5px;
+    color: var(--ink-4);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  /* ============================================================
+     ANIMATIONS
+     ============================================================ */
+  @keyframes phoneIn {
+    from { opacity: 0; transform: translateY(20px) scale(0.96); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  
+  @keyframes contextIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .phone-stage { animation: phoneIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .context-left { animation: contextIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both; }
+  .context-right { animation: contextIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+  
+  /* Responsive — hide context columns on smaller screens */
+  @media (max-width: 1200px) {
+    .page {
+      grid-template-columns: 1fr;
+    }
+    .context-left, .context-right { display: none; }
+  }
+  
+  /* ============================================================
+     TOUR INDICATORS — pulse markers on clickable demo elements
+     ============================================================ */
+  .tour-pulse {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 0 2px rgba(11, 10, 8, 0.85), 0 0 12px var(--bronze);
+    z-index: 100;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tour-pulse::before, .tour-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+  }
+  .tour-pulse::before { animation: tourRing 2.4s ease-out infinite; }
+  .tour-pulse::after { animation: tourRing 2.4s ease-out infinite 1.2s; }
+  @keyframes tourRing {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(3.4); opacity: 0; }
+  }
+  .tour-pulse:hover { transform: scale(1.3); }
+  .tour-pulse-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1A1816;
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    color: var(--ink-1);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Geist', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    letter-spacing: 0.01em;
+  }
+  .tour-pulse-label .arrow {
+    color: var(--bronze);
+    font-family: 'Geist Mono', monospace;
+    margin: 0 4px 0 2px;
+  }
+  .tour-pulse:hover .tour-pulse-label { opacity: 1; }
+  .tour-pulse.tl { top: -6px; left: -6px; }
+  .tour-pulse.tl .tour-pulse-label { left: calc(100% + 12px); }
+  .tour-pulse.tl .tour-pulse-label::before { content: ''; position: absolute; right: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-right-color: #1A1816; }
+  .tour-pulse.tr { top: -6px; right: -6px; }
+  .tour-pulse.tr .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.tr .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  .tour-pulse.center-r { top: 50%; right: -6px; transform: translateY(-50%); }
+  .tour-pulse.center-r:hover { transform: translateY(-50%) scale(1.3); }
+  .tour-pulse.center-r .tour-pulse-label { right: calc(100% + 12px); }
+  .tour-pulse.center-r .tour-pulse-label::before { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); border: 5px solid transparent; border-left-color: #1A1816; }
+  body.tour-off .tour-pulse { display: none; }
+  
+  .tour-toggle {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 9999;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px 9px 11px;
+    background: rgba(26, 24, 22, 0.95);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    border-radius: 999px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--ink-1);
+    font-family: 'Geist', sans-serif;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    user-select: none;
+  }
+  .tour-toggle:hover { border-color: var(--bronze); transform: translateY(-1px); }
+  .tour-toggle-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  .tour-toggle-dot::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bronze);
+    opacity: 0;
+    animation: tourRing 2.4s ease-out infinite;
+  }
+  body.tour-off .tour-toggle-dot { background: var(--ink-4); box-shadow: none; }
+  body.tour-off .tour-toggle-dot::after { display: none; }
+  body.tour-off .tour-toggle { color: var(--ink-3); border-color: rgba(255,255,255,0.08); }
+  .tour-toggle-key {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    padding: 1px 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 3px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+  
+  <!-- LEFT CONTEXT -->
+  <div class="context-left">
+    <div class="demo-eyebrow">Member Surface</div>
+    <div class="demo-title">What <em>Sarah</em> sees.</div>
+    <div class="demo-lede">
+      Tuesday morning, 6:42am. The personalised member app — what she opens before deciding whether to come in. Every element here is shaped by data the strategy delivers.
+    </div>
+    <a href="gm-dashboard.html" class="demo-cta" data-tour="<span class='arrow'>←</span>Dashboard" data-tour-pos="tr">
+      <span class="arrow">←</span>
+      Back to Dashboard
+    </a>
+  </div>
+  
+  <!-- PHONE MOCKUP -->
+  <div class="phone-stage">
+    <div class="phone-shadow-glow"></div>
+    
+    <div class="phone">
+      <div class="screen">
+        <div class="island"></div>
+        
+        <!-- Status bar -->
+        <div class="status-bar">
+          <div>6:42</div>
+          <div class="status-icons">
+            <!-- Signal -->
+            <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor">
+              <rect x="0" y="7" width="3" height="4" rx="0.5"/>
+              <rect x="4.5" y="5" width="3" height="6" rx="0.5"/>
+              <rect x="9" y="2.5" width="3" height="8.5" rx="0.5"/>
+              <rect x="13.5" y="0" width="3" height="11" rx="0.5"/>
+            </svg>
+            <!-- Wifi -->
+            <svg width="15" height="11" viewBox="0 0 15 11" fill="currentColor">
+              <path d="M7.5 10.5 L8.5 9.5 A1.5 1.5 0 0 0 6.5 9.5 Z"/>
+              <path d="M3 6.2 A6.4 6.4 0 0 1 12 6.2 L11 7.2 A5 5 0 0 0 4 7.2 Z"/>
+              <path d="M0.5 3.5 A10 10 0 0 1 14.5 3.5 L13.5 4.5 A8.5 8.5 0 0 0 1.5 4.5 Z"/>
+            </svg>
+            <!-- Battery -->
+            <svg width="27" height="11" viewBox="0 0 27 11" fill="none">
+              <rect x="0.5" y="0.5" width="22" height="10" rx="2.5" stroke="currentColor" stroke-opacity="0.5"/>
+              <rect x="2" y="2" width="14" height="7" rx="1" fill="currentColor"/>
+              <rect x="24" y="3.5" width="2" height="4" rx="1" fill="currentColor" fill-opacity="0.5"/>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Scrollable content -->
+        <div class="scroll">
+          
+          <!-- App chrome -->
+          <div class="app-top">
+            <div class="app-brand">Third&nbsp;Space</div>
+            <div class="app-actions">
+              <div class="icon-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.3-4.3"/>
+                </svg>
+              </div>
+              <div class="icon-btn has-dot">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                  <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Greeting -->
+          <div class="greeting">
+            <div class="greet-time">Tuesday morning · 6:42</div>
+            <div class="greet-headline">Good morning,<br/><em>Sarah.</em></div>
+            <div class="greet-context">
+              <div class="greet-pill">
+                <div class="dot"></div>
+                Week 8 · Marathon Prep
+              </div>
+              <span>32 days to go</span>
+            </div>
+          </div>
+          
+          <!-- TODAY'S SESSION -->
+          <div class="section">
+            <div class="section-head">
+              <div class="section-title">Today's Session</div>
+              <div class="section-action">See plan</div>
+            </div>
+            
+            <div class="hero-card">
+              <div class="hero-image">
+                <div class="hero-badge">
+                  <div class="pulse"></div>
+                  Threshold Day
+                </div>
+                <svg class="hero-decor" width="120" height="80" viewBox="0 0 120 80" fill="none" opacity="0.4">
+                  <!-- Abstract runner silhouette -->
+                  <path d="M20 60 Q30 40 40 60 T60 60 Q70 40 80 60 T100 60" stroke="#D4B274" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+                  <path d="M15 70 Q35 55 55 70 T95 70" stroke="#D4B274" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="hero-body">
+                <div class="hero-eyebrow">Programmed by Priya</div>
+                <div class="hero-name">Threshold Run · 60 min</div>
+                <div class="hero-meta">Performance Hall or treadmill · target zone 4</div>
+                <div class="hero-slots">
+                  <div class="slot primary">7:00 am</div>
+                  <div class="slot">6:00 pm</div>
+                  <div class="slot">7:00 pm</div>
+                  <div class="slot-more">+2 more</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- FOR YOUR TUESDAY -->
+          <div class="section">
+            <div class="section-head">
+              <div class="section-title">For Your Tuesday</div>
+              <div class="section-action">All classes</div>
+            </div>
+            
+            <div class="rec-scroll">
+              <div class="rec-row">
+                
+                <div class="rec-card featured">
+                  <div class="rec-image yoga">
+                    <div class="rec-tag-row">
+                      <div class="rec-tag">New slot</div>
+                    </div>
+                    <svg class="rec-image-decor" width="50" height="40" viewBox="0 0 50 40" fill="none">
+                      <circle cx="25" cy="13" r="4" stroke="#D4B274" stroke-width="0.6" fill="none"/>
+                      <path d="M22 18 Q25 22 28 18 L30 32 Q25 36 20 32 Z" stroke="#D4B274" stroke-width="0.6" fill="none"/>
+                    </svg>
+                  </div>
+                  <div class="rec-body">
+                    <div class="rec-time">07:15</div>
+                    <div class="rec-name">Vinyasa Flow</div>
+                    <div class="rec-instructor">Aiden Frost · Studio 1</div>
+                    <div class="rec-why">
+                      <svg class="why-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M8 1 L9.5 6 L14.5 6 L10.5 9.5 L12 14.5 L8 11.5 L4 14.5 L5.5 9.5 L1.5 6 L6.5 6 Z"/>
+                      </svg>
+                      <span>You were waitlisted <em>4 of last 6 Tuesdays</em> — this slot is for you</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="rec-card">
+                  <div class="rec-image hiit">
+                    <div class="rec-tag-row">
+                      <div class="rec-tag std">Recovery match</div>
+                    </div>
+                  </div>
+                  <div class="rec-body">
+                    <div class="rec-time">12:30</div>
+                    <div class="rec-name">HIIT 45</div>
+                    <div class="rec-instructor">Marcus K · Performance</div>
+                    <div class="rec-why">
+                      <svg class="why-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M3 8 L7 12 L13 4"/>
+                      </svg>
+                      <span>Light intensity after a threshold morning</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="rec-card">
+                  <div class="rec-image box">
+                    <div class="rec-tag-row">
+                      <div class="rec-tag std">You'll like</div>
+                    </div>
+                  </div>
+                  <div class="rec-body">
+                    <div class="rec-time">18:00</div>
+                    <div class="rec-name">Boxing Conditioning</div>
+                    <div class="rec-instructor">Femi Adeyemi · Box</div>
+                    <div class="rec-why">
+                      <svg class="why-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M8 1 L9.5 6 L14.5 6 L10.5 9.5 L12 14.5 L8 11.5 L4 14.5 L5.5 9.5 L1.5 6 L6.5 6 Z"/>
+                      </svg>
+                      <span>You've enjoyed Femi's classes <em>4× recently</em></span>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+          
+          <!-- YOUR PT + PROGRAMME -->
+          <div class="section">
+            <div class="section-head">
+              <div class="section-title">Your Coach</div>
+              <div class="section-action">Message Priya</div>
+            </div>
+            
+            <div class="pt-card">
+              <div class="pt-photo">
+                <div class="pt-photo-initial">P</div>
+                <div class="pt-online"></div>
+              </div>
+              <div class="pt-info">
+                <div class="pt-eyebrow">Personal Trainer</div>
+                <div class="pt-name">Priya Iyer</div>
+                <div class="pt-next">Next session · <b>Thursday 7:00am</b></div>
+                <div class="pt-prog">Endurance specialist · with you 11 months</div>
+              </div>
+            </div>
+            
+            <div class="programme">
+              <div class="programme-head">
+                <div class="programme-title">Marathon Prep.</div>
+                <div class="programme-week">Week 8 of 14</div>
+              </div>
+              <div class="programme-bar">
+                <div class="programme-bar-fill"></div>
+              </div>
+              <div class="programme-meta">
+                <span>Building threshold</span>
+                <span><b>32</b> days · race day Sat 28 Dec</span>
+              </div>
+              
+              <div class="programme-this-week">
+                <div class="programme-days">
+                  <div class="pday done">
+                    <div class="pday-dot">
+                      <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#1A1612" stroke-width="2.5" stroke-linecap="round">
+                        <path d="M3 8.5 L6.5 12 L13 5"/>
+                      </svg>
+                    </div>
+                    <span>Mon</span>
+                  </div>
+                  <div class="pday today">
+                    <div class="pday-dot pday-num">8</div>
+                    <span>Tue</span>
+                  </div>
+                  <div class="pday">
+                    <div class="pday-dot"></div>
+                    <span>Wed</span>
+                  </div>
+                  <div class="pday">
+                    <div class="pday-dot"></div>
+                    <span>Thu</span>
+                  </div>
+                  <div class="pday">
+                    <div class="pday-dot"></div>
+                    <span>Fri</span>
+                  </div>
+                  <div class="pday">
+                    <div class="pday-dot"></div>
+                    <span>Sat</span>
+                  </div>
+                  <div class="pday">
+                    <div class="pday-dot"></div>
+                    <span>Sun</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- RECOVERY -->
+          <div class="section">
+            <div class="section-head">
+              <div class="section-title">Recovery This Week</div>
+              <div class="section-action">View all</div>
+            </div>
+            
+            <div class="recovery-grid">
+              <div class="rec-tile tall">
+                <div class="rec-tile-content">
+                  <div class="rec-tile-eyebrow">After today's run</div>
+                  <div class="rec-tile-title">Spa &amp; Sauna<br/>Recovery</div>
+                  <div class="rec-tile-meta">60 min · slot available 11:30</div>
+                </div>
+              </div>
+              <div class="rec-tile stretch">
+                <div class="rec-tile-content">
+                  <div class="rec-tile-eyebrow">Wed 19:00</div>
+                  <div class="rec-tile-title">Recovery Stretch</div>
+                </div>
+              </div>
+              <div class="rec-tile">
+                <div class="rec-tile-content">
+                  <div class="rec-tile-eyebrow">Read · 4 min</div>
+                  <div class="rec-tile-title">Sleep &amp; the Long Run</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- FOUNDER PERKS -->
+          <div class="founder">
+            <div class="founder-head">
+              <span class="founder-tag">Founder · For You</span>
+            </div>
+            <div class="founder-title">Curated <em>this week</em>.</div>
+            <div class="founder-desc">Reserved for members like you. Concierge to arrange.</div>
+            
+            <div class="founder-perks">
+              <div class="perk">
+                <svg class="perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 10h18M5 6h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
+                  <path d="M7 15h2M11 15h2"/>
+                </svg>
+                <div class="perk-text"><b>Founder dinner</b> · Thursday 7pm at the kitchen, 12 places left</div>
+                <span class="perk-arrow">→</span>
+              </div>
+              <div class="perk">
+                <svg class="perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 12V8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4"/>
+                  <path d="M2 12h20v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6Z"/>
+                  <path d="M7 16h.01M11 16h.01"/>
+                </svg>
+                <div class="perk-text"><b>Guest pass</b> · 2 available this month, skip the waitlist</div>
+                <span class="perk-arrow">→</span>
+              </div>
+              <div class="perk">
+                <svg class="perk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"/>
+                  <path d="M12 8v4l3 2"/>
+                </svg>
+                <div class="perk-text"><b>Private spa hour</b> · Tuesday afternoons, by reservation</div>
+                <span class="perk-arrow">→</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="scroll-hint">— end of feed —</div>
+          
+        </div>
+        
+        <!-- Bottom tab bar -->
+        <div class="tab-bar">
+          <div class="tabs">
+            <div class="tab active">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9.5 L12 3 L21 9.5 V20 a1 1 0 0 1 -1 1 H4 a1 1 0 0 1 -1 -1 Z"/>
+              </svg>
+              <span class="tab-label">Home</span>
+            </div>
+            <div class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <path d="M16 2v4M8 2v4M3 10h18"/>
+              </svg>
+              <span class="tab-label">Book</span>
+            </div>
+            <div class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 12h12M12 6v12"/>
+                <circle cx="12" cy="12" r="9"/>
+              </svg>
+              <span class="tab-label">Train</span>
+            </div>
+            <div class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2 C7 7 7 12 12 17 C17 12 17 7 12 2 Z"/>
+                <path d="M5 22 Q12 16 19 22"/>
+              </svg>
+              <span class="tab-label">Recover</span>
+            </div>
+            <div class="tab">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21 a8 8 0 0 1 16 0"/>
+              </svg>
+              <span class="tab-label">Me</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="home-indicator"></div>
+      </div>
+    </div>
+    
+  </div>
+  
+  <!-- RIGHT ANNOTATIONS -->
+  <div class="context-right">
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Greeting</div>
+      <div class="annot-title">Knows her programme.</div>
+      <div class="annot-text">
+        "Week 8 · Marathon Prep" lives in her training profile. The countdown to race day is calculated, not set. <b>Sources: PT record, goals, calendar.</b>
+      </div>
+    </div>
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Today's Session</div>
+      <div class="annot-title">Coached, not generic.</div>
+      <div class="annot-text">
+        Threshold day is on Priya's plan. The slot times are her usual booking windows. The "+2 more" hides slots she's already declined this month. <b>Sources: PT programme, booking history, preference graph.</b>
+      </div>
+    </div>
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Vinyasa 7:15 · New Slot</div>
+      <div class="annot-title">The class she couldn't get.</div>
+      <div class="annot-text">
+        Sarah was waitlisted on Tuesday Vinyasa 4 of the last 6 weeks. The 7:15 slot was added in response. The app surfaces it with the reason. <b>Solves the NPS complaint that flagged her at-risk.</b>
+      </div>
+    </div>
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Recommendation Engine</div>
+      <div class="annot-title">"Why you" on every card.</div>
+      <div class="annot-text">
+        Each recommendation explains itself in one short line. No black box. Builds trust by showing the logic — <b>4× recently</b>, <b>light after threshold</b>, <b>waitlisted 4 of 6</b>.
+      </div>
+    </div>
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Coach Card</div>
+      <div class="annot-title">Continuity.</div>
+      <div class="annot-text">
+        "With you 11 months." Priya is the same PT she booked last quarter. Online dot means available now. <b>This is the relationship the data should never let go cold.</b>
+      </div>
+    </div>
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Programme Tracker</div>
+      <div class="annot-title">Progress made visible.</div>
+      <div class="annot-text">
+        Week 8/14. Mon ticked. Today's the planned threshold day. Engagement comes from <b>seeing the journey</b>, not just the next session.
+      </div>
+    </div>
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Recovery</div>
+      <div class="annot-title">Anticipates the body.</div>
+      <div class="annot-text">
+        Spa offered for after the run — Tuesday afternoon when she's typically free. Stretch class Wed evening prevents soreness. <b>Cross-sells without selling.</b>
+      </div>
+    </div>
+    
+    <div class="annotation">
+      <div class="annot-eyebrow">Founder Concierge</div>
+      <div class="annot-title">Tier-aware perks.</div>
+      <div class="annot-text">
+        Founder dinner with a real slot count. Guest pass remaining this month. Private spa hour. <b>The tier she pays £285/month for becomes visible value, every day she opens the app.</b>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+
+<script>
+  // ============================================================
+  // TOUR INDICATORS
+  // ============================================================
+  (function() {
+    const TOUR_KEY = 'thirdspace-tour-state';
+    const initialState = localStorage.getItem(TOUR_KEY) || 'on';
+    if (initialState === 'off') document.body.classList.add('tour-off');
+    
+    document.querySelectorAll('[data-tour]').forEach(el => {
+      const computed = getComputedStyle(el);
+      if (computed.position === 'static') el.style.position = 'relative';
+      
+      const label = el.getAttribute('data-tour');
+      const pos = el.getAttribute('data-tour-pos') || 'tr';
+      
+      const pulse = document.createElement('div');
+      pulse.className = 'tour-pulse ' + pos;
+      
+      const labelEl = document.createElement('div');
+      labelEl.className = 'tour-pulse-label';
+      labelEl.innerHTML = label;
+      pulse.appendChild(labelEl);
+      
+      el.appendChild(pulse);
+    });
+    
+    const toggle = document.createElement('div');
+    toggle.className = 'tour-toggle';
+    toggle.innerHTML = '<div class="tour-toggle-dot"></div><span id="tour-toggle-text">Tour: on</span><span class="tour-toggle-key">T</span>';
+    document.body.appendChild(toggle);
+    
+    function updateToggle() {
+      const isOff = document.body.classList.contains('tour-off');
+      const txt = document.getElementById('tour-toggle-text');
+      if (txt) txt.textContent = 'Tour: ' + (isOff ? 'off' : 'on');
+    }
+    updateToggle();
+    
+    function toggleTour() {
+      document.body.classList.toggle('tour-off');
+      localStorage.setItem(TOUR_KEY, document.body.classList.contains('tour-off') ? 'off' : 'on');
+      updateToggle();
+    }
+    
+    toggle.addEventListener('click', toggleTour);
+    document.addEventListener('keydown', (e) => {
+      if (e.key && e.key.toLowerCase() === 't') {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        toggleTour();
+      }
+    });
+  })();
+</script>
+</body>
+</html>

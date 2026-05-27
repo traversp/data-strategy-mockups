@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Third Space · Data Strategy · What good looks like</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0B0A08;
+    --bg-1: #131210;
+    --bg-2: #1A1816;
+    --bg-3: #221F1B;
+    --line: #2A2723;
+    --line-2: #3A352E;
+    --line-bright: #4A443B;
+    
+    --ink-1: #F4EFE3;
+    --ink-2: #C0B9A8;
+    --ink-3: #8A8576;
+    --ink-4: #5C574E;
+    
+    --bronze: #D4B274;
+    --bronze-2: #B89559;
+    --bronze-dim: #8E7B5C;
+    --bronze-faded: rgba(212, 178, 116, 0.08);
+    
+    --good: #7BC495;
+    --warn: #E0B26B;
+    --alert: #E08585;
+    --info: #8FB4D8;
+    --health: #B59FD8;
+  }
+  
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg-deep); }
+  
+  body {
+    background: var(--bg-deep);
+    color: var(--ink-1);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    font-feature-settings: 'ss01' on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    
+    background-image:
+      radial-gradient(ellipse 1400px 800px at 50% -200px, rgba(212, 178, 116, 0.07) 0%, transparent 55%),
+      radial-gradient(ellipse 800px 600px at 100% 100%, rgba(212, 178, 116, 0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 600px 600px at 0% 60%, rgba(212, 178, 116, 0.025) 0%, transparent 60%);
+    background-attachment: fixed;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(244, 239, 227, 0.015) 1px, transparent 0);
+    background-size: 28px 28px;
+    z-index: 0;
+  }
+  
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+  
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 80px;
+  }
+  
+  .brand-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .wordmark {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.32em;
+    color: var(--ink-1);
+    text-transform: uppercase;
+  }
+  
+  .brand-sep {
+    width: 1px;
+    height: 14px;
+    background: var(--line-2);
+  }
+  
+  .product-name {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  
+  .header-meta {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .header-meta .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero {
+    max-width: 880px;
+    margin-bottom: 80px;
+  }
+  
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 12px 5px 10px;
+    background: var(--bronze-faded);
+    border: 1px solid rgba(212, 178, 116, 0.2);
+    border-radius: 999px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 28px;
+  }
+  
+  .hero-eyebrow::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 6px var(--bronze);
+  }
+  
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    color: var(--ink-1);
+    margin-bottom: 28px;
+  }
+  
+  .hero-title em {
+    font-style: italic;
+    color: var(--bronze);
+    font-weight: 400;
+  }
+  
+  .hero-lede {
+    font-size: 19px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-width: 720px;
+    margin-bottom: 28px;
+    letter-spacing: -0.005em;
+  }
+  
+  .hero-lede b {
+    color: var(--ink-1);
+    font-weight: 500;
+  }
+  
+  .hero-meta-row {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-3);
+    flex-wrap: wrap;
+  }
+  
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .meta-item .marker {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--bronze);
+  }
+  
+  .meta-item b {
+    color: var(--ink-1);
+    font-weight: 500;
+  }
+  
+  /* ============================================================
+     ARTEFACTS GRID
+     ============================================================ */
+  .artefacts {
+    margin-bottom: 100px;
+  }
+  
+  .artefacts-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-style: italic;
+    color: var(--ink-1);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+  
+  .section-aside {
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
+  
+  /* Cards span variable columns to create rhythm */
+  .card { grid-column: span 2; }
+  .card.wide { grid-column: span 3; }
+  
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .card, .card.wide { grid-column: span 1; }
+  }
+  
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 48px; }
+  }
+  
+  .card {
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    box-shadow: 
+      0 1px 0 rgba(255, 240, 220, 0.04) inset,
+      0 12px 24px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--bronze-dim);
+    box-shadow: 
+      0 1px 0 rgba(255, 240, 220, 0.08) inset,
+      0 0 0 1px rgba(212, 178, 116, 0.15),
+      0 24px 48px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card:hover .card-cta .arrow {
+    transform: translateX(4px);
+  }
+  
+  .card:hover .preview {
+    transform: scale(1.02);
+  }
+  
+  /* Card preview area */
+  .preview {
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(180deg, #0F0E0C 0%, var(--bg-1) 100%);
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .preview::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(212, 178, 116, 0.3) 50%, transparent 100%);
+  }
+  
+  .card-num {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    z-index: 5;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--bronze);
+    padding: 3px 8px;
+    background: rgba(11, 10, 8, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(212, 178, 116, 0.2);
+    border-radius: 4px;
+  }
+  
+  .preview-inner {
+    position: absolute;
+    inset: 0;
+    padding: 40px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* Card body */
+  .card-body {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  .card-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .card-eyebrow .role-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--bronze);
+  }
+  
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-1);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+  
+  .card-desc {
+    font-size: 13px;
+    color: var(--ink-3);
+    line-height: 1.55;
+    margin-bottom: 18px;
+    flex: 1;
+  }
+  
+  .card-desc b {
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  
+  .card-audience {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+  }
+  
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--bronze);
+  }
+  
+  .card-cta .arrow {
+    font-family: 'Geist Mono', monospace;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  /* ============================================================
+     PREVIEW SIGNATURES — one per artefact
+     ============================================================ */
+  
+  /* DASHBOARD preview */
+  .preview-dashboard .pv-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  
+  .preview-dashboard .pv-kpi {
+    height: 32px;
+    background: var(--bg-3);
+    border-radius: 3px;
+    padding: 5px 6px;
+  }
+  
+  .preview-dashboard .pv-kpi.hi {
+    background: linear-gradient(180deg, #1F1B14 0%, #16130E 100%);
+    border: 1px solid rgba(212, 178, 116, 0.2);
+  }
+  
+  .preview-dashboard .pv-kpi-bar {
+    height: 3px;
+    background: var(--ink-4);
+    border-radius: 1px;
+    margin-bottom: 4px;
+    width: 40%;
+  }
+  
+  .preview-dashboard .pv-kpi-num {
+    height: 8px;
+    background: var(--ink-2);
+    border-radius: 1px;
+    width: 60%;
+  }
+  
+  .preview-dashboard .pv-kpi.hi .pv-kpi-num {
+    background: var(--bronze);
+  }
+  
+  .preview-dashboard .pv-chart {
+    flex: 1;
+    background: var(--bg-2);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+  }
+  
+  .preview-dashboard .pv-bar {
+    flex: 1;
+    background: var(--ink-4);
+    border-radius: 1px 1px 0 0;
+  }
+  
+  .preview-dashboard .pv-bar.bronze { background: var(--bronze); }
+  .preview-dashboard .pv-bar.dim { background: var(--ink-5); }
+  
+  /* MEMBER 360 preview */
+  .preview-360 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 24px;
+  }
+  
+  .preview-360 .pv-systems {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    width: 100%;
+    margin-bottom: 8px;
+  }
+  
+  .preview-360 .pv-sys {
+    height: 32px;
+    background: var(--bg-3);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 5px 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .preview-360 .pv-sys-tag {
+    width: 60%;
+    height: 2px;
+    background: var(--bronze);
+    border-radius: 1px;
+  }
+  
+  .preview-360 .pv-sys-id {
+    width: 80%;
+    height: 4px;
+    background: var(--ink-4);
+    border-radius: 1px;
+  }
+  
+  .preview-360 .pv-flow {
+    width: 80%;
+    height: 18px;
+    position: relative;
+    margin: 0 0 6px;
+  }
+  
+  .preview-360 .pv-flow-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze) 30%, var(--bronze) 70%, transparent 100%);
+    opacity: 0.5;
+  }
+  
+  .preview-360 .pv-flow-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bronze);
+    box-shadow: 0 0 8px var(--bronze);
+  }
+  
+  .preview-360 .pv-canonical {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(212, 178, 116, 0.08) 0%, var(--bg-1) 100%);
+    border: 1px solid rgba(212, 178, 116, 0.25);
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .preview-360 .pv-canon-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: rgba(212, 178, 116, 0.15);
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    flex-shrink: 0;
+  }
+  
+  .preview-360 .pv-canon-lines {
+    flex: 1;
+  }
+  
+  .preview-360 .pv-canon-id {
+    width: 70%;
+    height: 5px;
+    background: var(--bronze);
+    border-radius: 1px;
+    margin-bottom: 4px;
+  }
+  
+  .preview-360 .pv-canon-meta {
+    width: 90%;
+    height: 3px;
+    background: var(--ink-4);
+    border-radius: 1px;
+  }
+  
+  /* CONSOLE preview */
+  .preview-console {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 8px;
+    padding: 24px 18px;
+    height: 100%;
+  }
+  
+  .preview-console .pv-queue {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: var(--bg-2);
+    border-radius: 4px;
+    padding: 6px;
+  }
+  
+  .preview-console .pv-q-row {
+    padding: 4px 6px;
+    border-radius: 2px;
+    position: relative;
+    padding-left: 8px;
+  }
+  
+  .preview-console .pv-q-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 3px;
+    bottom: 3px;
+    width: 2px;
+    background: var(--alert);
+    border-radius: 1px;
+  }
+  
+  .preview-console .pv-q-row.med::before { background: var(--warn); }
+  
+  .preview-console .pv-q-row.active {
+    background: var(--bronze-faded);
+  }
+  
+  .preview-console .pv-q-row.active::before { background: var(--bronze); }
+  
+  .preview-console .pv-q-name {
+    height: 4px;
+    background: var(--ink-2);
+    border-radius: 1px;
+    width: 70%;
+    margin-bottom: 2px;
+  }
+  
+  .preview-console .pv-q-sig {
+    height: 2px;
+    background: var(--ink-4);
+    border-radius: 1px;
+    width: 90%;
+  }
+  
+  .preview-console .pv-detail {
+    background: var(--bg-2);
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .preview-console .pv-d-risk {
+    font-family: 'Geist', sans-serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--alert);
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  
+  .preview-console .pv-d-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  
+  .preview-console .pv-d-stat {
+    height: 14px;
+    background: var(--bg-3);
+    border-radius: 2px;
+  }
+  
+  .preview-console .pv-d-chart {
+    height: 24px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .preview-console .pv-d-chart::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: 
+      linear-gradient(180deg, rgba(123, 196, 149, 0.2) 0%, transparent 100%);
+  }
+  
+  /* MEMBER APP preview — phone silhouette */
+  .preview-app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 14px;
+  }
+  
+  .preview-app .pv-phone {
+    width: 100px;
+    height: 180px;
+    background: linear-gradient(135deg, #2A2622 0%, #1A1716 100%);
+    border-radius: 16px;
+    padding: 4px;
+    box-shadow: 
+      0 1px 0 rgba(255,240,220,0.08) inset,
+      0 8px 24px rgba(0,0,0,0.4);
+    position: relative;
+  }
+  
+  .preview-app .pv-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-deep);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 12px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+  }
+  
+  .preview-app .pv-island {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 28px;
+    height: 8px;
+    background: #000;
+    border-radius: 99px;
+  }
+  
+  .preview-app .pv-app-title {
+    height: 8px;
+    background: var(--ink-1);
+    border-radius: 1px;
+    width: 60%;
+    margin: 4px 0 4px;
+    font-family: 'Fraunces', serif;
+  }
+  
+  .preview-app .pv-app-sub {
+    height: 3px;
+    background: var(--bronze);
+    border-radius: 1px;
+    width: 40%;
+    margin-bottom: 4px;
+  }
+  
+  .preview-app .pv-app-hero {
+    height: 52px;
+    background: linear-gradient(135deg, #4A2F1E 0%, #1A0E08 100%);
+    border-radius: 4px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+  
+  .preview-app .pv-app-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    height: 3px;
+    background: var(--bronze);
+    border-radius: 1px;
+    opacity: 0.6;
+  }
+  
+  .preview-app .pv-app-cards {
+    display: flex;
+    gap: 3px;
+  }
+  
+  .preview-app .pv-app-card {
+    flex: 1;
+    height: 36px;
+    background: var(--bg-2);
+    border-radius: 3px;
+  }
+  
+  .preview-app .pv-app-card.featured {
+    border: 1px solid rgba(212, 178, 116, 0.3);
+    background: rgba(212, 178, 116, 0.05);
+  }
+  
+  /* ASK preview — chat */
+  .preview-ask {
+    padding: 28px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    justify-content: center;
+  }
+  
+  .preview-ask .pv-q {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-1);
+    font-size: 15px;
+    line-height: 1.25;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .preview-ask .pv-ai-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    padding: 2px 7px;
+    background: var(--bronze-faded);
+    border: 1px solid rgba(212, 178, 116, 0.2);
+    border-radius: 99px;
+    align-self: flex-start;
+  }
+  
+  .preview-ask .pv-ai-mark::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--bronze);
+  }
+  
+  .preview-ask .pv-a-line {
+    height: 3px;
+    background: var(--ink-3);
+    border-radius: 1px;
+    width: 92%;
+  }
+  
+  .preview-ask .pv-a-line.short { width: 70%; }
+  
+  .preview-ask .pv-a-line.bronze {
+    background: var(--bronze);
+    width: 40%;
+  }
+  
+  .preview-ask .pv-a-spark {
+    height: 24px;
+    background: var(--bg-2);
+    border-radius: 3px;
+    margin: 2px 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 4px;
+    gap: 3px;
+  }
+  
+  .preview-ask .pv-spark-bar {
+    flex: 1;
+    background: var(--ink-4);
+    border-radius: 1px;
+  }
+  
+  .preview-ask .pv-spark-bar.bronze { background: var(--bronze); }
+  
+  /* ============================================================
+     FLOW / NARRATIVE
+     ============================================================ */
+  .flow {
+    background: 
+      radial-gradient(ellipse 800px 200px at 50% 0%, rgba(212, 178, 116, 0.04) 0%, transparent 60%),
+      var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 36px 40px;
+    margin-bottom: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .flow::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze) 30%, var(--bronze) 70%, transparent 100%);
+    opacity: 0.5;
+  }
+  
+  .flow-head {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  
+  .flow-eyebrow {
+    display: inline-block;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bronze);
+    margin-bottom: 10px;
+  }
+  
+  .flow-title {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-style: italic;
+    color: var(--ink-1);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  
+  .flow-sub {
+    font-size: 13px;
+    color: var(--ink-3);
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  
+  .flow-arc {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    position: relative;
+    margin: 24px 0 4px;
+    align-items: center;
+  }
+  
+  .flow-arc::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--bronze-dim) 10%, var(--bronze-dim) 90%, transparent 100%);
+    opacity: 0.3;
+    transform: translateY(-50%);
+  }
+  
+  .arc-step {
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    transition: all 0.2s;
+  }
+  
+  .arc-step:hover {
+    border-color: var(--bronze-dim);
+  }
+  
+  .arc-num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--bronze);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  
+  .arc-name {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-1);
+    font-weight: 400;
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  
+  .arc-role {
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+  
+  /* ============================================================
+     FOUNDATIONS STRIP
+     ============================================================ */
+  .foundations {
+    margin-bottom: 60px;
+  }
+  
+  .foundations-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  
+  .foundations-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  
+  @media (max-width: 900px) {
+    .foundations-grid { grid-template-columns: repeat(2, 1fr); }
+    .flow-arc { grid-template-columns: 1fr; gap: 8px; }
+    .flow-arc::before { display: none; }
+  }
+  
+  .foundation {
+    padding: 18px 20px;
+    background: var(--bg-1);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  
+  .foundation:hover {
+    border-color: var(--line-bright);
+    background: var(--bg-2);
+  }
+  
+  .foundation-num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    color: var(--bronze);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    margin-bottom: 8px;
+  }
+  
+  .foundation-name {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--ink-1);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    margin-bottom: 8px;
+  }
+  
+  .foundation-desc {
+    font-size: 11px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  
+  .footer-left {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  
+  .footer-meta {
+    font-family: 'Geist Mono', monospace;
+    color: var(--ink-4);
+    font-size: 10.5px;
+  }
+  
+  .footer-meta b {
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  
+  /* ============================================================
+     ANIMATIONS
+     ============================================================ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .header, .hero, .artefacts, .flow, .foundations, .footer {
+    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  
+  .hero { animation-delay: 0.05s; }
+  .artefacts { animation-delay: 0.1s; }
+  .flow { animation-delay: 0.15s; }
+  .foundations { animation-delay: 0.2s; }
+  .footer { animation-delay: 0.25s; }
+  
+  .card {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .card:nth-child(1) { animation-delay: 0.15s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.25s; }
+  .card:nth-child(4) { animation-delay: 0.3s; }
+  .card:nth-child(5) { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand-row">
+      <div class="wordmark">Third&nbsp;Space</div>
+      <div class="brand-sep"></div>
+      <div class="product-name">Data Strategy</div>
+    </div>
+    
+    <div class="header-meta">
+      <div class="dot"></div>
+      <span>v1.4 · Demo set · Nov 2024</span>
+    </div>
+  </header>
+  
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">What good looks like</div>
+    
+    <h1 class="hero-title">
+      Five surfaces.<br/>
+      <em>One foundation.</em>
+    </h1>
+    
+    <p class="hero-lede">
+      A walk through the operating end-state of the x-month data strategy.
+      Every artefact below runs on the <b>same governed data layer</b> —
+      one resolved member, one set of certified KPIs, one trusted source of
+      truth. Click any to explore.
+    </p>
+    
+    <div class="hero-meta-row">
+      <div class="meta-item">
+        <div class="marker"></div>
+        <span><b>5</b> product surfaces</span>
+      </div>
+      <div class="meta-item">
+        <div class="marker"></div>
+        <span><b>4</b> distinct audiences</span>
+      </div>
+      <div class="meta-item">
+        <div class="marker"></div>
+        <span>One <b>Sarah Jones</b> across all of them</span>
+      </div>
+      <div class="meta-item">
+        <div class="marker"></div>
+        <span>Built on the foundations work in the <b>data strategy</b></span>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ARTEFACTS GRID -->
+  <section class="artefacts">
+    <div class="artefacts-head">
+      <div class="section-title">The artefacts.</div>
+      <div class="section-aside">Recommended demo order · 01 → 05</div>
+    </div>
+    
+    <div class="grid">
+      
+      <!-- 01 GM Dashboard -->
+      <a href="gm-dashboard.html" class="card wide">
+        <div class="preview preview-dashboard">
+          <div class="card-num">01</div>
+          <div class="preview-inner">
+            <div class="pv-kpis">
+              <div class="pv-kpi hi">
+                <div class="pv-kpi-bar"></div>
+                <div class="pv-kpi-num"></div>
+              </div>
+              <div class="pv-kpi">
+                <div class="pv-kpi-bar"></div>
+                <div class="pv-kpi-num"></div>
+              </div>
+              <div class="pv-kpi">
+                <div class="pv-kpi-bar"></div>
+                <div class="pv-kpi-num"></div>
+              </div>
+              <div class="pv-kpi">
+                <div class="pv-kpi-bar"></div>
+                <div class="pv-kpi-num"></div>
+              </div>
+            </div>
+            <div class="pv-chart">
+              <div class="pv-bar" style="height:42%"></div>
+              <div class="pv-bar" style="height:58%"></div>
+              <div class="pv-bar" style="height:46%"></div>
+              <div class="pv-bar" style="height:38%"></div>
+              <div class="pv-bar" style="height:30%"></div>
+              <div class="pv-bar" style="height:52%"></div>
+              <div class="pv-bar bronze" style="height:26%"></div>
+              <div class="pv-bar dim" style="height:30%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">
+            <div class="role-dot"></div>
+            GM &amp; Operations
+          </div>
+          <h2 class="card-title">GM Live Dashboard.</h2>
+          <p class="card-desc">
+            The general manager's command surface. <b>KPI hero strip</b>,
+            attention alerts, today's classes &amp; footfall, member pulse,
+            and the <b>AI Observations panel</b> that surfaces patterns
+            across member, class, PT and finance data.
+          </p>
+          <div class="card-footer">
+            <span class="card-audience">audience · JP Singh, GM</span>
+            <span class="card-cta">Open <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 02 Member 360 -->
+      <a href="member-360.html" class="card wide">
+        <div class="preview preview-360">
+          <div class="card-num">02</div>
+          <div class="preview-inner" style="padding: 36px 24px 16px;">
+            <div class="pv-systems">
+              <div class="pv-sys"><div class="pv-sys-tag"></div><div class="pv-sys-id"></div></div>
+              <div class="pv-sys"><div class="pv-sys-tag"></div><div class="pv-sys-id"></div></div>
+              <div class="pv-sys"><div class="pv-sys-tag"></div><div class="pv-sys-id"></div></div>
+              <div class="pv-sys"><div class="pv-sys-tag"></div><div class="pv-sys-id"></div></div>
+              <div class="pv-sys"><div class="pv-sys-tag"></div><div class="pv-sys-id"></div></div>
+            </div>
+            <div class="pv-flow">
+              <div class="pv-flow-line"></div>
+              <div class="pv-flow-node"></div>
+            </div>
+            <div class="pv-canonical">
+              <div class="pv-canon-icon"></div>
+              <div class="pv-canon-lines">
+                <div class="pv-canon-id"></div>
+                <div class="pv-canon-meta"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">
+            <div class="role-dot"></div>
+            Foundation Layer
+          </div>
+          <h2 class="card-title">Member 360.</h2>
+          <p class="card-desc">
+            The resolved member, made visible. Sarah Jones across <b>5
+            source systems</b> resolved to one canonical record — the MDM
+            work paying off. Behaviour, programme, financial, comms, all
+            in one editorial page.
+          </p>
+          <div class="card-footer">
+            <span class="card-audience">audience · concierge, retention, exec</span>
+            <span class="card-cta">Open <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 03 Churn Console -->
+      <a href="churn-console.html" class="card">
+        <div class="preview preview-console">
+          <div class="card-num">03</div>
+          <div class="pv-queue">
+            <div class="pv-q-row active">
+              <div class="pv-q-name"></div>
+              <div class="pv-q-sig"></div>
+            </div>
+            <div class="pv-q-row">
+              <div class="pv-q-name"></div>
+              <div class="pv-q-sig"></div>
+            </div>
+            <div class="pv-q-row">
+              <div class="pv-q-name"></div>
+              <div class="pv-q-sig"></div>
+            </div>
+            <div class="pv-q-row med">
+              <div class="pv-q-name"></div>
+              <div class="pv-q-sig"></div>
+            </div>
+            <div class="pv-q-row med">
+              <div class="pv-q-name"></div>
+              <div class="pv-q-sig"></div>
+            </div>
+          </div>
+          <div class="pv-detail">
+            <div class="pv-d-risk">73<span style="font-size:14px; opacity:0.6;">%</span></div>
+            <div class="pv-d-stats">
+              <div class="pv-d-stat"></div>
+              <div class="pv-d-stat"></div>
+              <div class="pv-d-stat"></div>
+              <div class="pv-d-stat"></div>
+            </div>
+            <div class="pv-d-chart"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">
+            <div class="role-dot"></div>
+            Retention Workflow
+          </div>
+          <h2 class="card-title">Churn Intervention Console.</h2>
+          <p class="card-desc">
+            The retention team's work tool. Ranked at-risk queue, per-member
+            behaviour trajectory, <b>SHAP-explained risk signals</b>, and
+            ML-suggested interventions with predicted recovery rates.
+          </p>
+          <div class="card-footer">
+            <span class="card-audience">audience · Head of Membership</span>
+            <span class="card-cta">Open <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 04 Member App -->
+      <a href="member-app.html" class="card">
+        <div class="preview preview-app">
+          <div class="card-num">04</div>
+          <div class="pv-phone">
+            <div class="pv-screen">
+              <div class="pv-island"></div>
+              <div class="pv-app-title"></div>
+              <div class="pv-app-sub"></div>
+              <div class="pv-app-hero"></div>
+              <div class="pv-app-cards">
+                <div class="pv-app-card featured"></div>
+                <div class="pv-app-card"></div>
+                <div class="pv-app-card"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">
+            <div class="role-dot"></div>
+            Member-facing
+          </div>
+          <h2 class="card-title">Personalised Member App.</h2>
+          <p class="card-desc">
+            What Sarah sees on her phone. Programme-aware greeting,
+            <b>recommendations with "why you" reasoning</b>, the new 7:15
+            Vinyasa slot added in response to her waitlist pattern.
+            Cross-sell without selling.
+          </p>
+          <div class="card-footer">
+            <span class="card-audience">audience · the member</span>
+            <span class="card-cta">Open <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+      
+      <!-- 05 Ask Third Space -->
+      <a href="ask-third-space.html" class="card">
+        <div class="preview preview-ask">
+          <div class="card-num">05</div>
+          <div class="pv-q">"How is Canary Wharf doing?"</div>
+          <div class="pv-ai-mark">Third Space</div>
+          <div class="pv-a-line"></div>
+          <div class="pv-a-spark">
+            <div class="pv-spark-bar" style="height:40%"></div>
+            <div class="pv-spark-bar" style="height:60%"></div>
+            <div class="pv-spark-bar bronze" style="height:75%"></div>
+            <div class="pv-spark-bar" style="height:50%"></div>
+            <div class="pv-spark-bar" style="height:65%"></div>
+            <div class="pv-spark-bar" style="height:45%"></div>
+            <div class="pv-spark-bar" style="height:55%"></div>
+            <div class="pv-spark-bar" style="height:35%"></div>
+          </div>
+          <div class="pv-a-line"></div>
+          <div class="pv-a-line short"></div>
+          <div class="pv-a-line bronze"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-eyebrow">
+            <div class="role-dot"></div>
+            Analytical AI
+          </div>
+          <h2 class="card-title">Ask Third Space.</h2>
+          <p class="card-desc">
+            Natural language over governed data. Inline visualisations,
+            <b>cited sources</b>, awareness of competing KPI definitions
+            with owners — the answer ChatGPT can't give because the
+            foundations don't exist there.
+          </p>
+          <div class="card-footer">
+            <span class="card-audience">audience · GM, exec, analyst</span>
+            <span class="card-cta">Open <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+      
+    </div>
+  </section>
+  
+  <!-- FLOW / NARRATIVE -->
+  <section class="flow">
+    <div class="flow-head">
+      <div class="flow-eyebrow">Suggested demo path</div>
+      <div class="flow-title">The 8-minute walkthrough.</div>
+      <div class="flow-sub">
+        Open these in order. The narrative builds across them. Every member
+        referenced is the same Sarah Jones; every metric is the same
+        certified number; every system is the same source of truth.
+      </div>
+    </div>
+    
+    <div class="flow-arc">
+      <div class="arc-step">
+        <div class="arc-num">01</div>
+        <div class="arc-name">Dashboard.</div>
+        <div class="arc-role">Situational awareness</div>
+      </div>
+      <div class="arc-step">
+        <div class="arc-num">02</div>
+        <div class="arc-name">Member 360.</div>
+        <div class="arc-role">Who Sarah is</div>
+      </div>
+      <div class="arc-step">
+        <div class="arc-num">03</div>
+        <div class="arc-name">Console.</div>
+        <div class="arc-role">What to do</div>
+      </div>
+      <div class="arc-step">
+        <div class="arc-num">04</div>
+        <div class="arc-name">Member App.</div>
+        <div class="arc-role">What she sees</div>
+      </div>
+      <div class="arc-step">
+        <div class="arc-num">05</div>
+        <div class="arc-name">Ask.</div>
+        <div class="arc-role">What you ask</div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- FOUNDATIONS -->
+  <section class="foundations">
+    <div class="foundations-head">
+      <div class="section-title">Foundations that enable all of this.</div>
+      <div class="section-aside">Delivered by a foundational data strategy plan</div>
+    </div>
+    
+    <div class="foundations-grid">
+      <div class="foundation">
+        <div class="foundation-num">01 / FOUNDATION</div>
+        <div class="foundation-name">Resolved member.</div>
+        <div class="foundation-desc">
+          One canonical Sarah across Platform DB, Member App, PT, Stripe and Spa HRIS. MDM with survivorship rules.
+        </div>
+      </div>
+      <div class="foundation">
+        <div class="foundation-num">02 / FOUNDATION</div>
+        <div class="foundation-name">Certified KPIs.</div>
+        <div class="foundation-desc">
+          One definition each for Active Members, Revenue, NPS, At Risk. Owners named. Alternatives tracked in the glossary.
+        </div>
+      </div>
+      <div class="foundation">
+        <div class="foundation-num">03 / FOUNDATION</div>
+        <div class="foundation-name">Governed pipelines.</div>
+        <div class="foundation-desc">
+          Source → certified gold. Change control. Tested. Documented. No more pipelines living in someone's head.
+        </div>
+      </div>
+      <div class="foundation">
+        <div class="foundation-num">04 / FOUNDATION</div>
+        <div class="foundation-name">Privacy &amp; access.</div>
+        <div class="foundation-desc">
+          Role-based access. Article 9 health data masked from management views. Purview lineage and audit log.
+        </div>
+      </div>
+      <div class="foundation">
+        <div class="foundation-num">05 / FOUNDATION</div>
+        <div class="foundation-name">Operating model.</div>
+        <div class="foundation-desc">
+          RACI across domains. Domain owners empowered. Data team as partners, not subjects. Backfill for the day job.
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-left">
+      <div class="footer-meta">
+        Third Space · Data Strategy Demo Set · <b>v1.4</b>
+      </div>
+    </div>
+    <div class="footer-meta">
+      Built for the steering session · Travers Powell
+    </div>
+  </footer>
+  
+</div>
+
+<script>
+  // Tactile click on cards
+  document.querySelectorAll('.card, .arc-step, .foundation').forEach(el => {
+    el.addEventListener('mousedown', () => {
+      el.style.transition = 'all 0.1s ease';
+      el.style.transform = (el.classList.contains('card') ? 'translateY(-1px)' : 'scale(0.99)');
+    });
+    el.addEventListener('mouseup', () => {
+      el.style.transform = '';
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  });
+</script>
+
+</body>
+</html>
